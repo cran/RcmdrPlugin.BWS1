@@ -1,0 +1,4 @@
+import(stats, Rcmdr, crossdes, support.BWS, support.CEs, survival)
+importFrom("graphics", "par")
+exportPattern("^[^\\.]")
+

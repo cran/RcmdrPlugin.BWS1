@@ -196,15 +196,13 @@ bws1Items <- function() {
     itemValue <- trim.blanks(tclvalue(itemName))
     closeDialog()
     nrows <- as.numeric(tclvalue(rowsValue))
-    cmd <- paste(itemValue, " <- rep('', ", nrows, ")", sep = "")
     values <- rep("", nrows)
     for (i in 1:nrows){
       varname <- paste(".tab.", i, sep = "")
       values[i] <- eval(parse(text = paste("tclvalue(", varname,")", 
                                            sep = "")))
-      cmd <- paste(cmd, "; ", itemValue, "[", i, "] <- c('", values[i],
-                   "')", sep = "")
     }
+    cmd <- paste0(itemValue, " <- c('", paste(values, collapse = "', '"), "')")
     doItAndPrint(cmd)
     tkfocus(CommanderWindow())
   }
@@ -228,6 +226,8 @@ bws1Items <- function() {
   tkgrid(tableFrame, sticky="w")
 
   tkgrid(inputsFrame, sticky="w")
+
+  setUpTable()
 
   tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
   dialogSuffix()
@@ -603,7 +603,7 @@ bws1Dataset <- function() {
 
   # Output
   tkgrid(labelRcmdr(datasetnameFrame,
-    text = gettextRcmdr("Names for data set ")),
+    text = gettextRcmdr("Name for data set ")),
     dataset, sticky = "w")
   tkgrid(datasetnameFrame, labelRcmdr(outputFrame, text = "  "), activeFrame,
          labelRcmdr(outputFrame, 
@@ -649,6 +649,8 @@ bws1Dataset <- function() {
   tkgrid(leftFrame, labelRcmdr(inputsFrame, text = "    "),
          rightFrame, sticky = "nw")
   tkgrid(inputsFrame, sticky = "w")
+
+  setUpTable()
 
   # Buttons
   tkgrid(buttonsFrame, columnspan = 2, sticky = "w")

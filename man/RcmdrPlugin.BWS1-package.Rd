@@ -107,6 +107,11 @@ calculates shares of preferences for items from the model fitted in the
 previous dialog boxes using the function \code{\link[support.BWS]{bws.sp}} 
 in \pkg{\link{support.BWS}}.
 }
+
+\bold{Acknowledgments}
+
+This work was supported by JSPS KAKENHI Grant Number JP20K06251.
+
 }
 
 \author{
@@ -118,6 +123,9 @@ Aizaki, H (2012) Basic Functions for Supporting an Implementation of
 Choice Experiments in R. \emph{Journal of Statistical Software}, Code 
 Snippets, 50(2): 1--24. \url{https://doi.org/10.18637/jss.v050.c02}.
 
+Aizaki, H (2020) support.BWS: Tools for Case 1 Best-Worst Scaling. 
+R package version 0.4-2. \url{https://CRAN.R-project.org/package=support.BWS}.
+
 Aizaki H, Nakatani T, Sato K (2014) \emph{Stated Preference Methods 
 Using R}. Chapman and Hall/CRC. \url{https://doi.org/10.1201/b17292}.
 
@@ -128,8 +136,8 @@ Interface to R. \emph{Journal of Statistical Software}, 14(9): 1--42.
 Fox J (2017) \emph{Using the R Commander: A Point-and-Click Interface 
 for R}. Chapman and Hall/CRC. \url{https://doi.org/10.1201/9781315380537}.
 
-Fox J, Bouchet-Valat M (2020) Rcmdr: R Commander. R package version 2.6-2.
- \url{http://socserv.socsci.mcmaster.ca/jfox/Misc/Rcmdr/}.
+Fox J, Bouchet-Valat M (2020) Rcmdr: R Commander. R package version 2.7-0.
+ \url{https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/}.
 
 Louviere JJ, Flynn TN, Marley AAJ (2015) \emph{Best-Worst Scaling: 
 Theory, Methods and Applications}. Cambridge University Press. 
@@ -138,8 +146,8 @@ Theory, Methods and Applications}. Cambridge University Press.
 Sailer O (2005) crossdes: A package for design and randomization in 
 crossover studies. \emph{Rnews}, 5/2: 24--27.
 
-Therneau T (2020) A Package for Survival Analysis in R. R package 
-version 3.1-12. \url{https://CRAN.R-project.org/package=survival}.
+Therneau T (2020) survival: Survival Analysis. R package version 3.2-3. 
+\url{https://CRAN.R-project.org/package=survival}.
 
 Therneau TM, Grambsch PM (2000) \emph{Modeling Survival Data: Extending 
 the Cox Model}. Springer. \url{https://doi.org/10.1007/978-1-4757-3294-8}.

@@ -18,6 +18,11 @@
 \alias{bws1count2P}
 \alias{bws1dataP}
 \alias{clogitP}
+\alias{resetbws1Dataset}
+\alias{resetbws1Fitmodel}
+\alias{resetbws1FitmodelSimple}
+\alias{resetbws1Items}
+
 
 \title{R Commander Plug-in for Case 1 (Object Case) Best--Worst Scaling}
 
@@ -92,7 +97,8 @@ method for class \sQuote{bws.count2}: \code{\link[support.BWS]{bws.count}}).
    \item The dialog box for \dQuote{Draw relationship between means and 
 sds of scores...} draws a plot of the relationship between means and 
 standard deviations of the BW scores by item using an R basic graphic 
-function plot (S3 method for class \sQuote{bws.count2}: \code{\link[support.BWS]{bws.count}}).
+function plot (S3 method for class \sQuote{bws.count2}: 
+\code{\link[support.BWS]{bws.count}}).
    \item The dialog box for \dQuote{Fit model...} implements a modeling 
 analysis using the data set for analysis generated in the previous 
 dialog box using the functions \code{\link[survival]{clogit}} 
@@ -107,12 +113,12 @@ calculates shares of preferences for items from the model fitted in the
 previous dialog boxes using the function \code{\link[support.BWS]{bws.sp}} 
 in \pkg{\link{support.BWS}}.
 }
-
-\bold{Acknowledgments}
-
-This work was supported by JSPS KAKENHI Grant Number JP20K06251.
-
 }
+
+\section{Acknowledgments}{
+This work was supported by JSPS KAKENHI Grant Number JP20K06251.
+}
+
 
 \author{
 Hideo Aizaki

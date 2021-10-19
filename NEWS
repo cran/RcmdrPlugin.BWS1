@@ -1,5 +1,10 @@
 Changes to package RcmdrPlugin.BWS1
 
+2021-10-19, version 0.1-5
+- Modified dialog box for fitting model.
+- Modified dialog box for drawing mean scores.
+- Revised help file.
+
 2020-12-17, version 0.1-4
 - Added a button apply to dialog boxes.
 

@@ -9,7 +9,6 @@
 \alias{bws1CountSummary}
 \alias{bws1Dataset}
 \alias{bws1DesignOLD}
-\alias{bws1Fitmodel}
 \alias{bws1FitmodelSimple}
 \alias{bws1Items}
 \alias{bws1Questions}
@@ -40,10 +39,10 @@ analyzing the responses. For details on BWS1, refer to Louviere et al.
 \details{
 This package is an R Commander Plug-in package for case 1 best--worst 
 scaling (BWS1). It depends on R packages \pkg{\link{crossdes}} (Sailer 2005),
- \pkg{\link{support.BWS}} (Aizaki et al. 2014), 
-\pkg{\link{support.CEs}} (Aizaki 2012), and \pkg{survival} (Therneau 2020; 
+ \pkg{\link{support.BWS}} (Aizaki 2021; Aizaki et al. 2014), 
+\pkg{\link{support.CEs}} (Aizaki 2012), and \pkg{survival} (Therneau 2021; 
 Therneau and Grambsch 2000) as well as the \pkg{\link{Rcmdr}} package 
-(Fox 2005, 2017; Fox and Bouchet-Valat 2020). Refer to 
+(Fox 2005, 2017ab; Fox and Bouchet-Valat 2021). Refer to 
 \pkg{\link{support.BWS}} and \dQuote{Non-Market Valuation with R} 
 <\url{http://lab.agr.hokudai.ac.jp/nmvr/}> for a brief introduction to BWS1 
 in R.
@@ -104,10 +103,6 @@ analysis using the data set for analysis generated in the previous
 dialog box using the functions \code{\link[survival]{clogit}} 
 in \pkg{survival} and \code{\link[support.CEs]{gofm}} 
 in \pkg{\link{support.CEs}}.
-   \item The dialog box for \dQuote{Fit model with simple dialog box...} 
-also implements a modeling analysis using \code{\link[survival]{clogit}} 
-and \code{\link[support.CEs]{gofm}}. However, the method of usage is 
-easier than that in \dQuote{Fit model...}.
    \item The dialog box for \dQuote{Calculate shares of preferences...} 
 calculates shares of preferences for items from the model fitted in the 
 previous dialog boxes using the function \code{\link[support.BWS]{bws.sp}} 
@@ -127,42 +122,45 @@ Hideo Aizaki
 \references{
 Aizaki, H (2012) Basic Functions for Supporting an Implementation of 
 Choice Experiments in R. \emph{Journal of Statistical Software}, Code 
-Snippets, 50(2): 1--24. \url{https://doi.org/10.18637/jss.v050.c02}.
+Snippets, 50(2): 1--24. DOI: 10.18637/jss.v050.c02
 
-Aizaki, H (2020) support.BWS: Tools for Case 1 Best-Worst Scaling. 
-R package version 0.4-2. \url{https://CRAN.R-project.org/package=support.BWS}.
+Aizaki, H (2021) support.BWS: Tools for Case 1 Best-Worst Scaling. 
+R package version 0.4-4. \url{https://CRAN.R-project.org/package=support.BWS}.
 
 Aizaki H, Nakatani T, Sato K (2014) \emph{Stated Preference Methods 
-Using R}. Chapman and Hall/CRC. \url{https://doi.org/10.1201/b17292}.
+Using R}. Chapman and Hall/CRC. DOI: 10.1201/b17292
 
 Fox J (2005) The R Commander: A Basic Statistics Graphical User 
 Interface to R. \emph{Journal of Statistical Software}, 14(9): 1--42. 
-\url{https://doi.org/10.18637/jss.v014.i09}.
+DOI: 10.18637/jss.v014.i09
 
-Fox J (2017) \emph{Using the R Commander: A Point-and-Click Interface 
-for R}. Chapman and Hall/CRC. \url{https://doi.org/10.1201/9781315380537}.
+Fox J (2017a) \emph{Using the R Commander: A Point-and-Click Interface 
+for R}. Chapman and Hall/CRC. DOI: 10.1201/9781315380537
 
-Fox J, Bouchet-Valat M (2020) Rcmdr: R Commander. R package version 2.7-0.
+Fox J (2017b) Writing R Commander Plug-in Packages. Version 3.4-0. 
+\url{https://socialsciences.mcmaster.ca/jfox/Books/RCommander/plug-ins.html}.
+
+Fox J, Bouchet-Valat M (2021) Rcmdr: R Commander. R package version 2.7-1.
  \url{https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/}.
 
 Louviere JJ, Flynn TN, Marley AAJ (2015) \emph{Best-Worst Scaling: 
 Theory, Methods and Applications}. Cambridge University Press. 
-\url{https://doi.org/10.1017/CBO9781107337855}.
+DOI: 10.1017/CBO9781107337855
 
 Sailer O (2005) crossdes: A package for design and randomization in 
 crossover studies. \emph{Rnews}, 5/2: 24--27.
 
-Therneau T (2020) survival: Survival Analysis. R package version 3.2-3. 
+Therneau T (2021) survival: Survival Analysis. R package version 3.2-13. 
 \url{https://CRAN.R-project.org/package=survival}.
 
 Therneau TM, Grambsch PM (2000) \emph{Modeling Survival Data: Extending 
-the Cox Model}. Springer. \url{https://doi.org/10.1007/978-1-4757-3294-8}.
+the Cox Model}. Springer. DOI: 10.1007/978-1-4757-3294-8
 
 }
 
 \examples{
-\dontrun{
-library(RcmdrPlugin.BWS1)
+if (interactive()) {
+  library(RcmdrPlugin.BWS1)
 }
 }
 

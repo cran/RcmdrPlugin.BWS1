@@ -906,9 +906,10 @@ bws1CountBarplot2 <- function() {
   # type of scores
   radioButtons(radio1Frame, 
     name    = "scoretype",
-    buttons = c("BW", "B", "W"),
-    values  = c("bw", "b", "w"),
-    labels  = gettextRcmdr(c("Best-minus-Worst", "Best", "Worst")),
+    buttons = c("BW", "SBW", "B", "W"),
+    values  = c("bw", "sbw", "b", "w"),
+    labels  = gettextRcmdr(c("Best-minus-Worst (BW)", "Standardized BW",
+                             "Best", "Worst")),
     initialValue = dialog.values$ini.scoretype,
     title   = gettextRcmdr("Score type"))
 
@@ -1120,7 +1121,7 @@ bws1CountPlot <- function() {
 ###############################################################################
 bws1FitmodelSimple <- function() {
   initializeDialog(title = 
-    gettextRcmdr("Fit BWS1 Model with Simple Dialog Box"))
+    gettextRcmdr("Fit BWS1 Model"))
   defaults <- list(
     ini.responseVarName = "RES",
     ini.strataVarName   = "STR",
@@ -1155,26 +1156,35 @@ bws1FitmodelSimple <- function() {
     putRcmdr("reset.model", FALSE)
   }
 
+##### Output Frame
   UpdateModelNumber()
-  modelName  <- tclVar(paste("BWS1model.", getRcmdr("modelNumber"), sep = ""))
-  modelFrame <- tkframe(top)
-  model      <- ttkentry(modelFrame, width = "20", textvariable = modelName)
+  outputFrame <- tkframe(top)
+  modelName   <- tclVar(paste("BWS1model.", getRcmdr("modelNumber"), sep = ""))
+  model       <- ttkentry(outputFrame, width = "20", textvariable = modelName)
 
+##### Input Frame
+  inputFrame <- tkframe(top)
+  
+## Frames in left
+  leftFrame        <- tkframe(inputFrame)
+  responseVarFrame <- tkframe(leftFrame)
+  strataVarFrame   <- tkframe(leftFrame)
+  radioFrame       <- tkframe(leftFrame)
+
+# set response variable (responseVarFrame)
   responseVarName  <- tclVar(dialog.values$ini.responseVarName)
-  responseVarFrame <- tkframe(top)
   responseVar      <- ttkentry(responseVarFrame, width = "5",
                                textvariable = responseVarName)
 
+# set strata variable (strataVarFrame)
   strataVarName  <- tclVar(dialog.values$ini.strataVarName)
-  strataVarFrame <- tkframe(top)
   strataVar      <- ttkentry(strataVarFrame, width = "5",
                              textvariable = strataVarName)
 
+# select base item (radioFrame)
   rhsALL    <- attributes(eval(parse(text = ActiveDataSet())))$vnames
   NUMrhsALL <- length(rhsALL)
 
-  # select base item
-  radioFrame <- tkframe(top)
   radioButtons(radioFrame, 
     name         = "catalog",
     buttons      = paste("n", 1:NUMrhsALL, sep = ""),
@@ -1183,6 +1193,18 @@ bws1FitmodelSimple <- function() {
     initialValue = dialog.values$ini.baseItem,
     title        = gettextRcmdr("Base item")) 
   
+## Frames in right
+  rightFrame      <- tkframe(inputFrame)
+  covariatesFrame <- tkframe(rightFrame)
+
+# select covariates
+  availableCovariates <- 
+    sort(attributes(eval(parse(text = ActiveDataSet())))$respondent.characteristics)
+  covariatesBox <- variableListBox(
+                     covariatesFrame, availableCovariates,
+                     title = gettextRcmdr("Covariates (pick zero or more)"),
+                     selectmode = "multiple", listHeight = 5)
+
 
   onOK <- function () {
     putDialog("bws1FitmodelSimple", list(
@@ -1196,12 +1218,31 @@ bws1FitmodelSimple <- function() {
     k           <- as.numeric(tclvalue(catalogVariable))
     rhsVars     <- rhsALL[-k]
     rhsVars     <- paste(rhsVars, collapse = " + ")
+    covariates  <- getSelection(covariatesBox)
     closeDialog()
    
-    formula <- paste(responseVar, " ~ ", rhsVars, 
-                     " + strata(", strataVar ,")", sep = "")
-    cmd <- paste("clogit(", formula, ", data = ", ActiveDataSet(), ")",
-                 sep = "")
+    subset <- tclvalue(subsetVariable)
+    if (trim.blanks(subset) == gettextRcmdr("<all valid cases>") || trim.blanks(subset) == "") {
+      subset <- ""
+      putRcmdr("modelWithSubset", FALSE)
+    } else {
+      subset <- paste(", subset = ", subset, sep = "")
+      putRcmdr("modelWithSubset", TRUE)
+    }
+
+    if (length(covariates) == 0) {
+      formula <- paste(responseVar, " ~ ", rhsVars, 
+                       " + strata(", strataVar ,")", sep = "")
+    } else {
+      covariates <- paste(covariates, collapse = "+")
+      formula <- paste(responseVar, " ~ (", rhsVars, ") * (", covariates, 
+                       ") - (", covariates, ") + strata(", strataVar ,")", 
+                       sep = "")
+    }
+
+    cmd <- paste("clogit(", formula, ", data = ", ActiveDataSet(), subset, 
+                 ")", sep = "")
+
     doItAndPrint(paste(modelValue, " <- ", cmd, sep = ""))
     doItAndPrint(paste("attributes(", modelValue, ")$baseitem <- c('",
                  rhsALL[k], "')", sep = ""))
@@ -1216,11 +1257,14 @@ bws1FitmodelSimple <- function() {
                reset       = "resetbws1FitmodelSimple",
                apply       = "bws1FitmodelSimple")
 
-  tkgrid(labelRcmdr(modelFrame, text = gettextRcmdr("Name for model ")),
+## Output
+  tkgrid(labelRcmdr(outputFrame, text = gettextRcmdr("Name for model ")),
          model, sticky = "w")
-  tkgrid(modelFrame, sticky = "w")
+  tkgrid(outputFrame, sticky = "w")
   tkgrid(labelRcmdr(top, text = ""))
-  
+
+## Inputs
+# Frames in left  
   tkgrid(labelRcmdr(responseVarFrame, 
                     text = gettextRcmdr("Response variable ")),
          responseVar, sticky = "w")
@@ -1234,6 +1278,21 @@ bws1FitmodelSimple <- function() {
          strataVar, sticky = "w")
   tkgrid(strataVarFrame, sticky = "w")
 
+# Frames in right
+  tkgrid(getFrame(covariatesBox), sticky = "nw")
+  tkgrid(covariatesFrame, sticky = "w")
+
+# Inputs Frame
+  tkgrid(leftFrame, labelRcmdr(inputFrame, text = "   "), 
+         rightFrame, sticky = "nw")
+  tkgrid(inputFrame, sticky = "w")
+  
+# subset
+  subsetBox(rightFrame, model = TRUE)
+  tkgrid(labelRcmdr(rightFrame, text = ""))
+  tkgrid(subsetFrame, sticky = "w")
+
+# Buttons
   tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
 
   dialogSuffix()
@@ -1244,136 +1303,6 @@ resetbws1FitmodelSimple <- function() {
   putDialog("bws1FitmodelSimple", NULL)
   putDialog("bws1FitmodelSimple", NULL, resettable = FALSE)
   bws1FitmodelSimple()
-}
-###############################################################################
-bws1Fitmodel <- function() {
-  initializeDialog(title = 
-    gettextRcmdr("Fit BWS1 Model"))
-  defaults <- list(
-    ini.responseVarName = "RES",
-    ini.strataVarName   = "STR")
-  dialog.values <- getDialog("bws1Fitmodel", defaults)
-
-  .activeModel <- ActiveModel()
-  currentModel <- if(!is.null(.activeModel)) {
-    class(get(.activeModel, envir = .GlobalEnv))[1] == "clogit"
-  } else {
-    FALSE
-  }
-  if (currentModel) {
-    currentFields <- formulaFields(get(.activeModel, envir = .GlobalEnv))
-    if (currentFields$data != ActiveDataSet()) currentModel <- FALSE
-  }
-
-  # remove a term 'strata' from the current model formula
-  if (currentModel) {
-    currentRhs <- currentFields$rhs
-    currentRhs <- gsub(' +', '', currentRhs)
-    currentRhs <- unlist(strsplit(currentRhs, "\\+"))
-    strataPos  <- grep("strata\\(", currentRhs)
-    currentRhs <- currentRhs[-strataPos]
-    currentRhs <- paste(currentRhs, collapse = " + ")
-
-    currentFields$rhs <- currentRhs
-  }
-
-  if (isTRUE(getRcmdr("reset.model"))) {
-    currentModel <- FALSE
-    putRcmdr("reset.model", FALSE)
-  }
-
-  UpdateModelNumber()
-  modelName <- tclVar(paste("BWS1model.", getRcmdr("modelNumber"), sep = ""))
-  modelFrame <- tkframe(top)
-  model <- ttkentry(modelFrame, width = "20", textvariable = modelName)
-
-  responseVarName  <- tclVar(dialog.values$ini.responseVarName)
-  responseVarFrame <- tkframe(top)
-  responseVar      <- ttkentry(responseVarFrame, width = "20",
-                               textvariable = responseVarName)
-
-  strataVarName  <- tclVar(dialog.values$ini.strataVarName)
-  strataVarFrame <- tkframe(top)
-  strataVar      <- ttkentry(strataVarFrame, width = "20",
-                             textvariable = strataVarName)
-  
-  onOK <- function () {
-    putDialog("bws1Fitmodel", list(
-      ini.responseVarName = tclvalue(responseVarName),
-      ini.strataVarName   = tclvalue(strataVarName)))
-
-    responseVar <- trim.blanks(tclvalue(responseVarName))
-    strataVar   <- trim.blanks(tclvalue(strataVarName))
-    modelValue  <- trim.blanks(tclvalue(modelName))
-    closeDialog()
-
-    subset <- tclvalue(subsetVariable)
-    if (trim.blanks(subset) == gettextRcmdr("<all valid cases>") || trim.blanks(subset) == "") {
-      subset <- ""
-      putRcmdr("modelWithSubset", FALSE)
-    } else {
-      subset <- paste(", subset = ", subset, sep = "")
-      putRcmdr("modelWithSubset", TRUE)
-    }
-   
-    formula <- paste(responseVar, " ~ ", tclvalue(rhsVariable), 
-                     " + strata(", strataVar ,")", sep = "")
-    cmd <- paste("clogit(", formula, ", data = ", ActiveDataSet(), subset, ")",
-                 sep = "")
-    doItAndPrint(paste(modelValue, " <- ", cmd, sep = ""))
-    doItAndPrint(paste0(modelValue))
-    doItAndPrint(paste0("gofm(", modelValue,")"))
-
-    activeModel(modelValue)
-    tkfocus(CommanderWindow())
-  }
-
-  OKCancelHelp(helpSubject = "clogit",
-               model       = TRUE,
-               reset       = "resetbws1Fitmodel",
-               apply       = "bws1Fitmodel")
-
-  tkgrid(labelRcmdr(modelFrame, text = gettextRcmdr("Name for model ")),
-         model, sticky = "w")
-  tkgrid(modelFrame, sticky = "w")
-  tkgrid(labelRcmdr(top, text = ""))
-
-  tkgrid(labelRcmdr(top, text = gettextRcmdr("Model formula"),
-                    fg = getRcmdr("title.color"), font = "RcmdrTitleFont"),
-         sticky = "w")
-  tkgrid(labelRcmdr(responseVarFrame, 
-                    text = gettextRcmdr("1) Response variable ")),
-         responseVar, sticky = "w")
-  tkgrid(responseVarFrame, sticky = "w")
-  tkgrid(labelRcmdr(top, text = gettextRcmdr("2) Independent variables")),
-         sticky = "w")
-
-  modelFormula(hasLhs = FALSE, rhsExtras = TRUE, formulaLabel = "")
-  subsetBox(model = TRUE)
-
-  tkgrid(getFrame(xBox), sticky = "w")
-  tkgrid(outerOperatorsFrame, sticky = "ew")
-
-  tkgrid(formulaFrame, sticky = "w")
-
-  tkgrid(labelRcmdr(strataVarFrame, 
-                    text = gettextRcmdr("3) Stratification variable ")),
-         strataVar, sticky = "w")
-  tkgrid(strataVarFrame, sticky = "w")
-
-  tkgrid(labelRcmdr(top, text = ""))
-  tkgrid(subsetFrame, sticky = "w")
-
-  tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
-
-  dialogSuffix(preventDoubleClick = TRUE)
-}
-
-resetbws1Fitmodel <- function() {
-  putRcmdr("reset.model", TRUE)
-  putDialog("bws1Fitmodel", NULL)
-  putDialog("bws1Fitmodel", NULL, resettable = FALSE)
-  bws1Fitmodel()
 }
 ###############################################################################
 bws1SharePref <- function() {

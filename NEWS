@@ -1,8 +1,15 @@
 Changes to package RcmdrPlugin.BWS1
 
+2023-12-05, version 0.2-0
+- Removed a dialog box for synthesizing responses.
+- Integrated dialog boxes for generating design and setting items into one.
+- Added a dialog box for loading saved objects.
+- Modified appearances of some dialog boxes.
+- Revised help file.
+
 2021-10-19, version 0.1-5
-- Modified dialog box for fitting model.
-- Modified dialog box for drawing mean scores.
+- Modified a dialog box for fitting model.
+- Modified a dialog box for drawing mean scores.
 - Revised help file.
 
 2020-12-17, version 0.1-4

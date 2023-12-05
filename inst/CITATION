@@ -1,0 +1,33 @@
+citHeader("To cite RcmdrPlugin.BWS1 in publications use:")
+
+bibentry(
+  bibtype = "Manual",
+  title   = "{RcmdrPlugin.BWS1: R Commander Plug-in for Case 1 Best-Worst Scaling}",
+  author  = c(person("Hideo", "Aizaki")),
+  year    = 2023,
+  note    = "R package version 0.2-0",
+  url     = "https://CRAN.R-project.org/package=RcmdrPlugin.BWS1",
+
+  textVersion = 
+  paste("Aizaki H (2023).",
+        "RcmdrPlugin.BWS1: R Commander Plug-in for Case 1 Best-Worst Scaling.",
+        "R package version 0.2-0.",
+        "URL https://CRAN.R-project.org/package=RcmdrPlugin.BWS2.")
+)
+
+bibentry(
+  bibtype = "Article",
+  title   = "{R packages and tutorial for case 1 best-worst scaling}",
+  author  = c(person("Hideo", "Aizaki"), person("James", "Fogarty")),
+  year    = "2023",
+  journal = "Journal of Choice Modelling",
+  volume  = "46",
+  pages   = "100394",
+  doi     = "10.1016/j.jocm.2022.100394",
+
+  textVersion = 
+  paste("Aizaki H and Fogarty J (2023).",
+        "R packages and tutorial for case 1 best-worst scaling.",
+        "Journal of Choice Modelling, 46: 100394.",
+        "DOI https://doi.org/10.1016/j.jocm.2022.100394.")
+)

@@ -4,5 +4,6 @@ globalVariables(c('top', 'buttonsFrame', 'optionsFrame', 'catalogVariable',
  'modeltypeVariable', 'ordertypeFrame', 'ordertypeVariable', 'outerOperatorsFrame',
  'positiontypeFrame', 'positiontypeVariable', 'responsetypeFrame',
  'responsetypeVariable', 'rhsVariable', 'scoretypeFrame', 'scoretypeVariable',
- 'subsetFrame', 'subsetVariable', 'xBox', 'yesVariable', 'nrowsValue'))
+ 'subsetFrame', 'subsetVariable', 'xBox', 'yesVariable', 'nrowsValue', 
+ '.tableFrame1', '.tableFrame2', '.tableFrame3'))
 

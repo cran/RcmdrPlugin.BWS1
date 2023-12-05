@@ -1,10 +1,8 @@
 # type  menu/item   operation/parent  label                                                   command/menu       activation         install?
 
 menu    bws1Menu    topMenu           ""                                                      ""                 ""                 ""
-item    bws1Menu    command           "Generate design..."                                    bws1Design         ""                 "packageAvailable('crossdes')"
-item    bws1Menu    command           "Set items..."                                          bws1Items          ""                 "packageAvailable('crossdes')"
-item    bws1Menu    command           "Create questions..."                                   bws1Questions      ""                 "packageAvailable('support.BWS')"
-item    bws1Menu    command           "Synthesize responses..."                               bws1Response       ""                 "packageAvailable('support.BWS')"
+item    bws1Menu    command           "Create choice sets..."                                 bws1Design         ""                 "packageAvailable('crossdes')"
+item    bws1Menu    command           "Display questions..."                                  bws1Questions      ""                 "packageAvailable('support.BWS')"
 item    bws1Menu    command           "Create data set for analysis..."                       bws1Dataset        "activeDataSetP()" "packageAvailable('support.BWS')"
 item    topMenu     cascade           "BWS1"                                                  bws1Menu           ""                 "packageAvailable('crossdes')"
 menu    bws1Measure bws1Menu          ""                                                      ""                 ""                 ""
@@ -20,4 +18,7 @@ menu    bws1MA      bws1Menu          ""                                        
 item    bws1MA      command           "Fit model..."                                          bws1FitmodelSimple "bws1dataP()"      "packageAvailable('survival')"
 item    bws1MA      command           "Calculate shares of preferences..."                    bws1SharePref      "clogitP()"        "packageAvailable('support.BWS')"
 item    bws1Measure cascade           "Modeling approach"                                     bws1MA             ""                 "packageAvailable('support.BWS')"
+menu    bws1SV      bws1Menu          ""                                                      ""                 ""                 ""
+item    bws1Menu    cascade           "Load saved objects"                                    bws1SV             ""                 ""
+item    bws1SV      command           "Load saved objects..."                                 bws1Load           ""                 "packageAvailable('support.BWS')"
 

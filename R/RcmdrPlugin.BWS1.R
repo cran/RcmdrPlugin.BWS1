@@ -21,37 +21,54 @@
 ###############################################################################
 bws1Design <- function() {
   initializeDialog(
-    title = gettextRcmdr("Generate Design for BWS1"))
+    title = gettextRcmdr("Design Choice Sets for BWS1"))
   defaults <- list(
     ini.designName        = "BWS1design",
+    ini.itemName          = "BWS1items",
     ini.NitemsValue       = "4",
     ini.NquesValue        = "4",
     ini.NitemsPquesValue  = "3",
     ini.IterName          = "1000",
-    ini.RNGseedName       = "")
+    ini.RNGseedName       = "",
+    saveVariable          = "")
   dialog.values <- getDialog("bws1Design", defaults)
+
+  if (is.null(getDialog("bws1Design"))) putRcmdr("savedTableItems", NULL)
 
 
   #### output frame ####
   outputFrame <- tkframe(top)
+  designFrame <- tkframe(outputFrame)
+  itemsFrame  <- tkframe(outputFrame)
+  saveFrame   <- tkframe(outputFrame)
 
   # name for bibd
   designName <- tclVar(dialog.values$ini.designName)
-  design <- ttkentry(outputFrame, width = "20", textvariable = designName)
+  design     <- ttkentry(outputFrame, width = "14", textvariable = designName)
+
+  # name for items
+  itemName <- tclVar(dialog.values$ini.itemName)
+  item     <- ttkentry(itemsFrame, width = "14", textvariable = itemName) 
 
 
   #### input frame ####
-  optionsFrame <- tkframe(top)
-  RNGseedFrame <- tkframe(optionsFrame)
-  commentFrame <- tkframe(top)
+  inputFrame      <- tkframe(top)
+  optionsFrame    <- tkframe(inputFrame)
+  iterationFrame  <- tkframe(inputFrame)
+  RNGseedFrame    <- tkframe(inputFrame)
+  TABLEFrame      <- tkframe(inputFrame)
+  tableTitleFrame <- tkframe(TABLEFrame)
+  tableFrame1     <- tkframe(TABLEFrame)
+  tableFrame2     <- tkframe(TABLEFrame)
+  tableFrame3     <- tkframe(TABLEFrame)
 
   # t: number of items
   NitemsValue  <- tclVar(dialog.values$ini.NitemsValue)
   NitemsSlider <- tkscale(optionsFrame, from = 4, to = 21,
-                          showvalue = FALSE, 
-                          variable = NitemsValue, resolution = 1, 
+                          showvalue = FALSE,
+                          variable = NitemsValue, resolution = 1,
                           orient = "horizontal")
-  NitemsShow   <- labelRcmdr(optionsFrame, textvariable = NitemsValue, 
+  NitemsShow   <- labelRcmdr(optionsFrame, textvariable = NitemsValue,
                              width = 20, justify = "right")
 
   # b: number of questions
@@ -76,47 +93,189 @@ bws1Design <- function() {
 
   # iter: number of iterations (optional)
   IterName <- tclVar(dialog.values$ini.IterName)
-  Iter     <- ttkentry(optionsFrame, width = "10",
+  Iter     <- ttkentry(iterationFrame, width = "10",
                        textvariable = IterName)
 
   # random number generator seed
   RNGseedName <- tclVar(dialog.values$ini.RNGseedName)
-  RNGseed     <- ttkentry(optionsFrame, width = "10",
+  RNGseed     <- ttkentry(RNGseedFrame, width = "10",
                           textvariable = RNGseedName)
 
+  # table for items
+  ## Initial settings
+  env <- environment()
+  assign(".tableFrame1", tkframe(tableFrame1), envir = env)
+  tkdestroy(get(".tableFrame1", envir = env))
+  assign(".tableFrame2", tkframe(tableFrame2), envir = env)
+  tkdestroy(get(".tableFrame2", envir = env))
+  assign(".tableFrame3", tkframe(tableFrame3), envir = env)
+  tkdestroy(get(".tableFrame3", envir = env))
+  assign(".tableFrame1", tkframe(tableFrame1), envir = env)
+  assign(".tableFrame2", tkframe(tableFrame2), envir = env)
+  assign(".tableFrame3", tkframe(tableFrame3), envir = env)
+  nrows <- 7
+  ncols <- 3
+  
+  initial.table <- getRcmdr("savedTableItems")
+  
+  ## Names of columns
+  tkgrid(labelRcmdr(.tableFrame1, text = ""),
+         labelRcmdr(.tableFrame1, text = "Item 1 to 7"),
+         sticky = "w")
+  tkgrid(labelRcmdr(.tableFrame2, text = ""),
+         labelRcmdr(.tableFrame2, text = "Item 8 to 14"),
+         sticky = "w")
+  tkgrid(labelRcmdr(.tableFrame3, text = ""),
+         labelRcmdr(.tableFrame3, text = "Item 15 to 21"),
+         sticky = "w")
+
+  ## Names of rows and cells
+  ### Colmun 1
+  for (i in 1:nrows) {
+    varname <- paste0(".tab.", i, ".1")
+    assign(varname, if (is.null(initial.table)) {
+                      tclVar("")
+                    } else {
+                      tclVar(initial.table[i, 1])
+                    }, envir = env)
+    row.varname <- paste0(".rowname.", i)
+    make.row <- paste0("labelRcmdr(.tableFrame1, text = '", i, "')")
+    make.row <- paste0(make.row, ", ",
+                      "ttkentry(.tableFrame1, width = '20', textvariable =",
+                      varname, ")")
+    eval(parse(text = paste0("tkgrid(", make.row, ")")), envir = env)
+  }
+  ### Colmun 2
+  for (i in 1:nrows) {
+    varname <- paste0(".tab.", i, ".2")
+    assign(varname, if (is.null(initial.table)) {
+                      tclVar("")
+                    } else {
+                      tclVar(initial.table[i, 2])
+                    }, envir = env)
+    row.varname <- paste0(".rowname.", i)
+    make.row <- paste0("labelRcmdr(.tableFrame2, text = '", i + 7, "')")
+    make.row <- paste0(make.row, ", ",
+                      "ttkentry(.tableFrame2, width = '20', textvariable =",
+                      varname, ")")
+    eval(parse(text = paste0("tkgrid(", make.row, ")")), envir = env)
+  }
+  ### Colmun 3
+  for (i in 1:nrows) {
+    varname <- paste0(".tab.", i, ".3")
+    assign(varname, if (is.null(initial.table)) {
+                      tclVar("")
+                    } else {
+                      tclVar(initial.table[i, 3])
+                    }, envir = env)
+    row.varname <- paste0(".rowname.", i)
+    make.row <- paste0("labelRcmdr(.tableFrame3, text = '", i + 14, "')")
+    make.row <- paste0(make.row, ", ",
+                      "ttkentry(.tableFrame3, width = '20', textvariable =",
+                      varname, ")")
+    eval(parse(text = paste0("tkgrid(", make.row, ")")), envir = env)
+  }
+
+  tkgrid(get(".tableFrame1", envir = env), sticky = "w")
+  tkgrid(get(".tableFrame2", envir = env), sticky = "w")
+  tkgrid(get(".tableFrame3", envir = env), sticky = "w")
+
+  # Save
+  saveVariable <- tclVar(dialog.values$saveVariable)
+  saveCheckBox <- ttkcheckbutton(saveFrame, variable = saveVariable)
+  
+  
 
   #### onOK function ####
   onOK <- function() {
     putDialog("bws1Design", list(
       ini.designName        = tclvalue(designName),
+      ini.itemName          = tclvalue(itemName),
       ini.NitemsValue       = tclvalue(NitemsValue),
       ini.NquesValue        = tclvalue(NquesValue),
       ini.NitemsPquesValue  = tclvalue(NitemsPquesValue),
       ini.IterName          = tclvalue(IterName),
-      ini.RNGseedName       = tclvalue(RNGseedName)))
+      ini.RNGseedName       = tclvalue(RNGseedName),
+      saveVariable          = tclvalue(saveVariable)))
 
+    itemValue   <- trim.blanks(tclvalue(itemName))
     designValue <- trim.blanks(tclvalue(designName))
+
     closeDialog()
 
-    if (!is.na(as.numeric(tclvalue(RNGseedName)))) {
-      cmd.seed <- paste("set.seed(", as.numeric(tclvalue(RNGseedName)),
-                        ")", sep = "")
+    # Item table
+    nrows <- 7
+    ncols <- 3
+    varNames <- matrix("", nrow = nrows, ncol = ncols)
+    
+    for (i in 1:nrows) {
+      for (j in 1:ncols) {
+        varname <- paste0(".tab.", i, ".", j)
+        varNames[i, j] <- eval(parse(text = paste0("as.character(tclvalue(", varname, "))")))
+      }
     }
 
-    cmd <- paste("find.BIB(t = ", as.numeric(tclvalue(NitemsValue)),
+    a <- length(varNames[varNames != ""])
+    b <- as.numeric(tclvalue(NitemsValue))
+    if (a != b) {
+      errorCondition(message = gettextRcmdr("Number of items set by the slider differs from number of elements filled with items"))
+      return()
+    }
+
+    # Store items into savedTableItems
+    putRcmdr("savedTableItems", varNames)
+
+    # Vector containing items
+    itemNamesVector <- as.vector(varNames)
+    itemNamesVector <- itemNamesVector[1:as.numeric(tclvalue(NitemsValue))]
+
+    # Set random seed
+    if (!is.na(as.numeric(tclvalue(RNGseedName)))) {
+      cmd.seed <- paste0("set.seed(", as.numeric(tclvalue(RNGseedName)), ")")
+    }
+
+    # Search BIBD    
+    cmd <- paste0("find.BIB(t = ", as.numeric(tclvalue(NitemsValue)),
                         ", b = ", as.numeric(tclvalue(NquesValue)),
                         ", k = ", as.numeric(tclvalue(NitemsPquesValue)),
-                        ", iter = ", as.numeric(tclvalue(IterName)), 
-                 ")", sep = "")
+                        ", iter = ", as.numeric(tclvalue(IterName)), ")")
 
     if (!is.na(as.numeric(tclvalue(RNGseedName)))) {
       doItAndPrint(paste0(cmd.seed))
       doItAndPrint(paste0(designValue, " <- ", cmd))
     } else {
-      doItAndPrint(paste(designValue, " <- ", cmd, sep = ""))
+      doItAndPrint(paste0(designValue, " <- ", cmd))
     }
-    doItAndPrint(paste(designValue))
-    doItAndPrint(paste("isGYD(", designValue, ")", sep = ""))
+    
+    doItAndPrint(paste0(designValue))
+    doItAndPrint(paste0("isGYD(", designValue, ")"))
+
+    # Create object containing items
+    cmd <- paste0(itemValue, " <- c('", paste(itemNamesVector, collapse = "', '"), "')")
+    doItAndPrint(cmd)
+    
+    # Save choice sets and items
+    if (tclvalue(saveVariable) == 1) {
+      saveFile <- tclvalue(tkgetSaveFile(
+        filetypes = gettextRcmdr(
+          '{"R Data Files" {".rda" ".RDA" ".rdata" ".RData"}}'),
+        defaultextension = ".rda",
+        initialfile = paste0(designValue, ".rda"),
+        parent = CommanderWindow()))
+      if (saveFile == "") {
+        tkfocus(CommanderWindow())
+        return()
+      }
+      cmd <- paste0('save(', designValue,
+                    ', ', itemValue,
+                    ', file = "', saveFile, '")')
+      justDoIt(cmd)
+      logger(cmd)
+      Message(paste0(gettextRcmdr("BWS1 design and items were exported to file: "),
+                     saveFile),
+              type = "note")
+    }
+        
     tkfocus(CommanderWindow())
   }
 
@@ -124,20 +283,34 @@ bws1Design <- function() {
   #### specification of dialog box ####
   # OK cancel help buttons
   OKCancelHelp(helpSubject = "find.BIB",
-               reset       = "bws1Design",
+               reset       = "resetbws1Items",
                apply       = "bws1Design")
 
   ## output
-  tkgrid(
-   labelRcmdr(outputFrame,
-              text = gettextRcmdr("Name for design ")),
-   design, sticky = "w")
+  tkgrid(labelRcmdr(designFrame,
+                    text = gettextRcmdr("Name for design ")),
+         design, sticky = "w")
+  tkgrid(labelRcmdr(itemsFrame,
+                    text = gettextRcmdr("Name for items ")),
+         item, sticky = "w")
+  tkgrid(saveCheckBox,
+         labelRcmdr(saveFrame,
+                    text = gettextRcmdr("Save to file")),
+         sticky = "w")
+  tkgrid(designFrame, labelRcmdr(outputFrame, text = "   "),
+         itemsFrame,  labelRcmdr(outputFrame, text = "   "),
+         saveFrame,   sticky = "w")  
   tkgrid(outputFrame, sticky = "w")
 
   ## blank line
   tkgrid(labelRcmdr(top, text = ""))
 
   ## input
+  # design parameters
+  tkgrid(labelRcmdr(optionsFrame,
+                    text = gettextRcmdr("Design parameters:")),
+         sticky = "w")
+
   # number of items
   tkgrid(labelRcmdr(optionsFrame, 
                     text = gettextRcmdr("Number of items")),
@@ -153,139 +326,34 @@ bws1Design <- function() {
                     text = gettextRcmdr("Number of items per question")),
          NitemsPquesSlider, NitemsPquesShow, sticky = "w")
 
-  # number of iterations
-  tkgrid(
-    labelRcmdr(optionsFrame,
-               text = gettextRcmdr("Number of iterations")),
-    Iter, sticky = "w")
-
-  # seed for RNG
-  tkgrid(
-    labelRcmdr(optionsFrame,
-      text = gettextRcmdr("Seed for random number generator (optional) ")),
-    RNGseed, sticky = "w")
-
   tkgrid(optionsFrame, sticky = "w")
 
-  tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
+  # item table
+  tkgrid(labelRcmdr(tableTitleFrame, text = gettextRcmdr("Items:")),
+         sticky = "w")
+  tkgrid(tableTitleFrame, sticky = "w")
+  tkgrid(tableFrame1, labelRcmdr(TABLEFrame, text = "  "),
+         tableFrame2, labelRcmdr(TABLEFrame, text = "  "),
+         tableFrame3, sticky = "nw")
+  tkgrid(TABLEFrame,  sticky = "nw")
 
-  dialogSuffix()
-}
-###############################################################################
-bws1Items <- function() {
-  initializeDialog(
-    title = gettextRcmdr("Set Item Names"))
-  defaults <- list(
-    ini.rowsValue = "4",
-    ini.itemName   = "BWS1items")
-  dialog.values <- getDialog("bws1Items", defaults)
+  # number of iterations
+  tkgrid(labelRcmdr(iterationFrame, text = gettextRcmdr("Search option:")),
+         sticky = "w")
+  tkgrid(labelRcmdr(iterationFrame, 
+                    text = gettextRcmdr("Number of iterations")),
+         Iter, sticky = "w")
+  tkgrid(iterationFrame, sticky = "w")
 
-  if(is.null(getDialog("bws1Items"))) putRcmdr("savedTableItems", NULL)
+  # seed for RNG
+  tkgrid(labelRcmdr(RNGseedFrame, text = gettextRcmdr("Reproducibility:")),
+         sticky = "w")
+  tkgrid(labelRcmdr(RNGseedFrame,
+           text = gettextRcmdr("Seed for random number generator (optional) ")),
+         RNGseed, sticky = "w")
+  tkgrid(RNGseedFrame, sticky = "w")
 
-  outputFrame <- tkframe(top)
-  inputsFrame <- tkframe(top)
-  rowsFrame   <- tkframe(inputsFrame)
-  tableFrame  <- tkframe(inputsFrame)
-  noteFrame   <- tkframe(inputsFrame)
-
-
-  env <- environment()
-  assign(".tableFrame", tkframe(tableFrame), envir = env)
-
-  setUpTable <- function(...) {
-    tkdestroy(get(".tableFrame", envir = env))
-    assign(".tableFrame", tkframe(tableFrame), envir = env)
-    nrows <- as.numeric(tclvalue(rowsValue))
-
-    make.col.names <- "labelRcmdr(.tableFrame, text = '')"
-    make.col.names <- 
-      paste(make.col.names, ", ", 
-            "labelRcmdr(.tableFrame, text = 'Item name')", sep = "")
-    eval(parse(text=paste("tkgrid(", make.col.names, ", sticky = 'w')",
-               sep = "")), envir = env)
-
-    for (i in 1:nrows){   
-      varname <- paste(".tab.", i, sep = "") 
-      assign(varname, if (is.null(ini.table)) {
-                        tclVar("")
-                      } else {
-                        tclVar(ini.table[i])
-                      }, envir = env)
-      row.varname <- paste(".rowname.", i, sep = "")
-      assign(row.varname, tclVar(i), envir = env)
-      make.row <- paste("labelRcmdr(.tableFrame, text =", i, ")")
-      make.row <- paste(make.row, ", ",
-                        "ttkentry(.tableFrame, width = '20', textvariable =", 
-                        varname, ")", sep="")
-      eval(parse(text = paste("tkgrid(", make.row, ")", sep = "")), 
-           envir = env)
-    }
-    tkgrid(get(".tableFrame", envir = env), sticky = "w")
-  }
-
-  ini.table <- getRcmdr("savedTableItems")
-
-  if (is.null(ini.table)) {
-    rowsValue <- tclVar(dialog.values$ini.rowsValue)
-  } else {
-    rowsValue <- tclVar(length(ini.table))
-  }
-
-  rowsSlider <- tkscale(rowsFrame, from = 4, to = 21, showvalue = FALSE, 
-                        variable = rowsValue,
-                        resolution = 1, orient = "horizontal",
-                        command = setUpTable)
-  rowsShow   <- labelRcmdr(rowsFrame, textvariable = rowsValue,
-                           width = 25, justify = "right")
-
-  itemName <- tclVar(dialog.values$ini.itemName)
-  item     <- ttkentry(outputFrame, width = "20", textvariable = itemName)
-
-
-  onOK <- function() {
-    putDialog("bws1Items", list(
-      ini.rowsValue = tclvalue(rowsValue),
-      ini.itemName   = tclvalue(itemName)))
-
-    itemValue <- trim.blanks(tclvalue(itemName))
-    closeDialog()
-
-    nrows <- as.numeric(tclvalue(rowsValue))
-    values <- rep("", nrows)
-    for (i in 1:nrows){
-      varname <- paste(".tab.", i, sep = "")
-      values[i] <- eval(parse(text = paste("tclvalue(", varname,")", 
-                                           sep = "")))
-    }
-    cmd <- paste0(itemValue, " <- c('", paste(values, collapse = "', '"), "')")
-    doItAndPrint(cmd)
-
-    putRcmdr("savedTableItems", values)
-
-    tkfocus(CommanderWindow())
-  }
-
-
-  OKCancelHelp(helpSubject = "bws.questionnaire",
-               reset       = "resetbws1Items",
-               apply       = "bws1Items")
-
-  tkgrid(labelRcmdr(
-    outputFrame,
-    text = gettextRcmdr("Name for item names ")),
-    item, sticky = "w")
-  tkgrid(outputFrame, sticky = "w")
-  tkgrid(labelRcmdr(top, text = ""))
-
-  tkgrid(labelRcmdr(rowsFrame, text = gettextRcmdr("Number of items ")),
-         rowsSlider, rowsShow, sticky = "w")
-  tkgrid(rowsFrame, sticky = "w")
-
-  tkgrid(tableFrame, sticky="w")
-
-  tkgrid(inputsFrame, sticky="w")
-
-  setUpTable()
+  tkgrid(inputFrame, sticky = "w")
 
   tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
 
@@ -294,29 +362,32 @@ bws1Items <- function() {
 
 resetbws1Items <- function() {
   putRcmdr("savedTableItems", NULL)
-  putDialog("bws1Items", NULL)
-  bws1Items()
+  putDialog("bws1Design", NULL)
+  bws1Design()
 }
 
 ###############################################################################
 bws1Questions <- function() {
   initializeDialog(
-    title = gettextRcmdr("Create BWS1 Questions"))
+    title = gettextRcmdr("Display BWS1 Questions"))
   defaults <- list(
     ini.designName = "BWS1design",
     ini.itemName   = "BWS1items")
   dialog.values <- getDialog("bws1Questions", defaults)
 
   inputsFrame <- tkframe(top)
+  designFrame <- tkframe(inputsFrame)
+  itemsFrame  <- tkframe(inputsFrame)
 
   # choice.sets
   designName <- tclVar(dialog.values$ini.designName)
-  design <- ttkentry(inputsFrame, width = "20",
-                     textvariable = designName)
+  design     <- ttkentry(designFrame, width = "14",
+                         textvariable = designName)
 
   # item.names
   itemName <- tclVar(dialog.values$ini.itemName)
-  item <- ttkentry(inputsFrame, width = "20", textvariable = itemName)
+  item <-     ttkentry(itemsFrame, width = "14",
+                       textvariable = itemName)
 
   onOK <- function() {
     putDialog("bws1Questions", list(
@@ -327,10 +398,9 @@ bws1Questions <- function() {
     itemVars    <- tclvalue(itemName)
     closeDialog()
 
-    doItAndPrint(paste("bws.questionnaire(choice.sets = ", designValue,
-                       ", design.type = 2", 
-                       ", item.names = ", itemVars, ")", 
-                       sep = ""))
+    doItAndPrint(paste0("bws.questionnaire(choice.sets = ", designValue,
+                        ", design.type = 2", 
+                        ", item.names = ", itemVars, ")"))
     tkfocus(CommanderWindow())
   }
 
@@ -339,132 +409,21 @@ bws1Questions <- function() {
                reset       = "bws1Questions",
                apply       = "bws1Questions")
 
-  tkgrid(labelRcmdr(
-    inputsFrame,
-    text = gettextRcmdr("Name of design ")),
-    design, sticky = "w")
-  tkgrid(inputsFrame, sticky = "w")
-  tkgrid(labelRcmdr(
-    inputsFrame,
-    text = gettextRcmdr("Name of item names ")),
-    item, sticky = "w")
+  tkgrid(labelRcmdr(designFrame,
+                    text = gettextRcmdr("Design ")),
+         design, sticky = "w")
+  tkgrid(labelRcmdr(itemsFrame,
+                    text = gettextRcmdr("Items ")),
+         item, sticky = "w")
+  tkgrid(designFrame, labelRcmdr(inputsFrame, text = "   "), itemsFrame,
+         sticky = "w")
   tkgrid(inputsFrame, sticky = "w")
 
   tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
 
   dialogSuffix()
 }
-###############################################################################
-bws1Response <- function() {
-  initializeDialog(
-    title = gettextRcmdr("Synthesize Responses to BWS1 Questions"))
-  defaults <- list(
-    ini.datasetName      = "BWS1responses",
-    ini.designName       = "BWS1design",
-    ini.itemName         = "BWS1items",
-    ini.nrespondentsName = "100",
-    ini.parametersName   = "",
-    ini.RNGseedName      = "")
-  dialog.values <- getDialog("bws1Response", defaults)
 
-  ###### Output
-  outputFrame <- tkframe(top)
-  datasetnameFrame <- tkframe(outputFrame)
-  activeFrame <- tkframe(outputFrame)
-
-  datasetName <- tclVar(dialog.values$ini.datasetName)
-  dataset <- ttkentry(datasetnameFrame, width = "20",
-                      textvariable = datasetName)
-
-  ###### Inputs
-  inputsFrame <- tkframe(top)
-
-  # choice.sets
-  designName <- tclVar(dialog.values$ini.designName)
-  design <- ttkentry(inputsFrame, width = "25", textvariable = designName)
-
-  # item.names
-  itemName <- tclVar(dialog.values$ini.itemName)
-  item <- ttkentry(inputsFrame, width = "25", textvariable = itemName)
-
-  # number of respondents
-  nrespondentsName <- tclVar(dialog.values$ini.nrespondentsName)
-  nrespondents <- ttkentry(inputsFrame, width = "25",
-                           textvariable = nrespondentsName)
-
-  # parameters
-  parametersName <- tclVar(dialog.values$ini.parametersName)
-  parameters <- ttkentry(inputsFrame, width = "25",
-                         textvariable = parametersName)
-
-  # random number generator seed
-  RNGseedName <- tclVar(dialog.values$ini.RNGseedName)
-  RNGseed <- ttkentry(inputsFrame, width = "25", textvariable = RNGseedName)
-
-
-  onOK <- function() {
-    putDialog("bws1Response", list(
-    ini.datasetName      = tclvalue(datasetName),
-    ini.designName       = tclvalue(designName),
-    ini.itemName         = tclvalue(itemName),
-    ini.nrespondentsName = tclvalue(nrespondentsName),
-    ini.parametersName   = tclvalue(parametersName),
-    ini.RNGseedName      = tclvalue(RNGseedName)))
-
-    closeDialog()
-
-    if (is.na(as.numeric(tclvalue(RNGseedName)))) {
-      cmd.seed <- paste(", seed = NULL)", sep = "")
-    } else {
-      cmd.seed <- paste(", seed = ",  as.numeric(tclvalue(RNGseedName)), 
-                        ")", sep = "")
-    }
-
-    doItAndPrint(paste(tclvalue(datasetName), 
-                       " <- bws.response(design = ", tclvalue(designName),
-                       ", item.names = ", tclvalue(itemName),
-                       ", b = c(", tclvalue(parametersName), ")",
-                       ", n = ", tclvalue(nrespondentsName),
-                       cmd.seed, sep = ""))
-
-    tkfocus(CommanderWindow())
-  }
-
-  OKCancelHelp(helpSubject = "bws.response",
-               reset       = "bws1Response",
-               apply       = "bws1Response")
-
-  # Output
-  tkgrid(labelRcmdr(datasetnameFrame,
-    text = gettextRcmdr("Name for data set ")),
-    dataset, sticky = "w")
-  tkgrid(datasetnameFrame, sticky = "w")
-  tkgrid(outputFrame, sticky = "w")
-  tkgrid(labelRcmdr(top, text = ""))
-
-  # Inputs
-  tkgrid(labelRcmdr(inputsFrame,
-    text = gettextRcmdr("Name of design")),
-    design, sticky = "w")
-  tkgrid(labelRcmdr(inputsFrame,
-    text = gettextRcmdr("Name of item names")),
-    item, sticky = "w")
-  tkgrid(labelRcmdr(inputsFrame,
-    text = gettextRcmdr("Number of respondents")),
-    nrespondents, sticky = "w")
-  tkgrid(labelRcmdr(inputsFrame,
-    text = gettextRcmdr("Parameter values")),
-    parameters, sticky = "w")
-  tkgrid(labelRcmdr(inputsFrame,
-    text = gettextRcmdr("Seed for random number generator (optional) ")),
-    RNGseed, sticky = "w")
-  tkgrid(inputsFrame, sticky = "w")
-
-  # Buttons
-  tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
-
-  dialogSuffix()
-}
 ###############################################################################
 bws1Dataset <- function() {
   initializeDialog(
@@ -477,19 +436,24 @@ bws1Dataset <- function() {
     ini.designName         = "BWS1design",
     ini.itemName           = "BWS1items",
     ini.idName             = "id",
-    ini.letterRB           = "1")
+    ini.letterRB           = "1",
+    saveVariable           = "0")
   dialog.values <- getDialog("bws1Dataset", defaults)
 
 
   ###### Output frame
   outputFrame      <- tkframe(top)
   datasetnameFrame <- tkframe(outputFrame)
-  activeFrame      <- tkframe(outputFrame)
+  saveFrame        <- tkframe(outputFrame)
 
   # output name
   datasetName <- tclVar(dialog.values$ini.datasetName)
-  dataset <- ttkentry(datasetnameFrame, width = "20",
-                      textvariable = datasetName)
+  dataset     <- ttkentry(datasetnameFrame, width = "14",
+                          textvariable = datasetName)
+
+  # save
+  saveVariable <- tclVar(dialog.values$saveVariable)
+  saveCheckBox <- ttkcheckbutton(saveFrame, variable = saveVariable)  
 
 
   ###### Inputs frame
@@ -504,15 +468,18 @@ bws1Dataset <- function() {
 
   # choice.sets
   designName <- tclVar(dialog.values$ini.designName)
-  design <- ttkentry(objectsFrame, width = "20", textvariable = designName)
+  design     <- ttkentry(objectsFrame, width = "14",
+                         textvariable = designName)
 
   # item.names
   itemName <- tclVar(dialog.values$ini.itemName)
-  item <- ttkentry(objectsFrame, width = "20", textvariable = itemName)
+  item     <- ttkentry(objectsFrame, width = "14",
+                       textvariable = itemName)
 
   # id
   idName <- tclVar(dialog.values$ini.idName)
-  id <- ttkentry(objectsFrame, width = "20", textvariable = idName)
+  id     <- ttkentry(objectsFrame, width = "14",
+                     textvariable = idName)
 
   # response.type
   radioButtons(radio1Frame, 
@@ -652,14 +619,15 @@ bws1Dataset <- function() {
 
   onOK <- function() {
     putDialog("bws1Dataset", list(
-    ini.responsetype       = tclvalue(responsetypeVariable),
-    ini.modeltype          = tclvalue(modeltypeVariable),
-    ini.rowsValue          = tclvalue(rowsValue),
-    ini.datasetName        = tclvalue(datasetName),
-    ini.designName         = tclvalue(designName),
-    ini.itemName           = tclvalue(itemName),
-    ini.idName             = tclvalue(idName),
-    ini.letterRB           = tclvalue(lettertypeVariable)))
+    ini.responsetype = tclvalue(responsetypeVariable),
+    ini.modeltype    = tclvalue(modeltypeVariable),
+    ini.rowsValue    = tclvalue(rowsValue),
+    ini.datasetName  = tclvalue(datasetName),
+    ini.designName   = tclvalue(designName),
+    ini.itemName     = tclvalue(itemName),
+    ini.idName       = tclvalue(idName),
+    saveVariable     = tclvalue(saveVariable),
+    ini.letterRB     = tclvalue(lettertypeVariable)))
 
     closeDialog()
 
@@ -695,6 +663,30 @@ bws1Dataset <- function() {
             ", response = ", cmd,
             ", model = '", tclvalue(modeltypeVariable), "')", sep = ""))
 
+    activeDataSet(tclvalue(datasetName))
+    
+    # Save to file
+    if (tclvalue(saveVariable) == 1) {
+      saveFile <- tclvalue(tkgetSaveFile(
+        filetypes = gettextRcmdr(
+          '{"R Data Files" {".rda" ".RDA" ".rdata" ".RData"}}'),
+        defaultextension = ".rda",
+        initialfile = paste0(tclvalue(datasetName), ".rda"),
+        parent = CommanderWindow()))
+      if (saveFile == "") {
+        tkfocus(CommanderWindow())
+        return()
+      }
+      cmd <- paste0('save(', tclvalue(datasetName),
+                    ', file = "', saveFile, '")')
+      justDoIt(cmd)
+      logger(cmd)
+      Message(paste(gettextRcmdr("Dataset for BWS1 analysis was exported to file: "),
+                    saveFile),
+              type = "note")
+    }
+
+
     tkfocus(CommanderWindow())
   }
 
@@ -707,19 +699,26 @@ bws1Dataset <- function() {
   tkgrid(labelRcmdr(datasetnameFrame,
     text = gettextRcmdr("Name for data set ")),
     dataset, sticky = "w")
-  tkgrid(datasetnameFrame, sticky = "w")
+  tkgrid(saveCheckBox,
+         labelRcmdr(saveFrame, text = gettextRcmdr("Save to file")),
+         sticky = "w")
+  tkgrid(datasetnameFrame,
+         labelRcmdr(outputFrame, text = "  "),
+         saveFrame, sticky = "w")
   tkgrid(outputFrame, sticky = "w")
+
+  # Blank
   tkgrid(labelRcmdr(top, text = ""))
 
   # Inputs
   tkgrid(labelRcmdr(objectsFrame,
-    text = gettextRcmdr("Name of design")),
+    text = gettextRcmdr("Design ")),
     design, sticky = "w")
   tkgrid(labelRcmdr(objectsFrame,
-    text = gettextRcmdr("Name of item names")),
+    text = gettextRcmdr("Items ")),
     item, sticky = "w")
   tkgrid(labelRcmdr(objectsFrame,
-    text = gettextRcmdr("ID variable")),
+    text = gettextRcmdr("ID variable ")),
     id, sticky = "w")
   tkgrid(objectsFrame, sticky = "w")
 
@@ -772,7 +771,7 @@ bws1Count <- function() {
 
   # data
   dataName <- tclVar(dialog.values$ini.dataName)
-  data     <- ttkentry(datasetFrame, width = "20", textvariable = dataName)
+  data     <- ttkentry(datasetFrame, width = "14", textvariable = dataName)
 
 
   onOK <- function() {
@@ -784,6 +783,8 @@ bws1Count <- function() {
 
     doItAndPrint(paste(dataValue," <- bws.count(data = ", ActiveDataSet(),
                        ", cl = 2)", sep = ""))
+
+    activeDataSet(dataValue)
 
     tkfocus(CommanderWindow())
   }
@@ -1160,7 +1161,7 @@ bws1FitmodelSimple <- function() {
   UpdateModelNumber()
   outputFrame <- tkframe(top)
   modelName   <- tclVar(paste("BWS1model.", getRcmdr("modelNumber"), sep = ""))
-  model       <- ttkentry(outputFrame, width = "20", textvariable = modelName)
+  model       <- ttkentry(outputFrame, width = "14", textvariable = modelName)
 
 ##### Input Frame
   inputFrame <- tkframe(top)
@@ -1267,15 +1268,23 @@ bws1FitmodelSimple <- function() {
 # Frames in left  
   tkgrid(labelRcmdr(responseVarFrame, 
                     text = gettextRcmdr("Response variable ")),
-         responseVar, sticky = "w")
+         labelRcmdr(responseVarFrame,
+                    text = tclvalue(responseVarName),
+                    relief = "solid",
+                    foreground = "green"),
+         sticky = "w")
   tkgrid(responseVarFrame, sticky = "w")
 
   tkgrid(catalogFrame, sticky = "w")
   tkgrid(radioFrame, sticky = "w")
 
-  tkgrid(labelRcmdr(strataVarFrame, 
+  tkgrid(labelRcmdr(strataVarFrame,
                     text = gettextRcmdr("Stratification variable ")),
-         strataVar, sticky = "w")
+         labelRcmdr(strataVarFrame,
+                    text = tclvalue(strataVarName),
+                    relief = "solid",
+                    foreground = "green"),
+         sticky = "w")
   tkgrid(strataVarFrame, sticky = "w")
 
 # Frames in right
@@ -1395,6 +1404,25 @@ bws1SharePref <- function() {
   tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
 
   dialogSuffix()
+}
+###############################################################################
+bws1Load <- function() {
+  file <- tclvalue(tkgetOpenFile(filetype = gettextRcmdr(
+            '{"R Data Files" {".rda" ".RDA" ".rdata" ".RData"}}')))
+  if (file == "") {
+    return()
+  }
+  setBusyCursor()
+  on.exit(setIdleCursor)
+  
+  cmd <- paste0('load("', file, '")')
+  loadedObjects <- justDoIt(cmd)
+  logger(cmd)
+  Message(paste0(gettextRcmdr("Names of loaded objects: "),
+                 paste(loadedObjects, collapse = ", ")),
+          type = "note")
+          
+  tkfocus(CommanderWindow())
 }
 ###############################################################################
 clogitP <- function() {

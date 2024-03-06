@@ -2,25 +2,8 @@
 \name{RcmdrPlugin.BWS1-package}
 \alias{RcmdrPlugin.BWS1-package}
 \alias{RcmdrPlugin.BWS1}
-\alias{bws1Design}
-\alias{bws1Count}
-\alias{bws1CountBarplot1}
-\alias{bws1CountBarplot2}
-\alias{bws1CountPlot}
 \alias{bws1CountSummary}
-\alias{bws1Dataset}
-\alias{bws1FitmodelSimple}
-\alias{bws1Items}
-\alias{bws1Questions}
-\alias{bws1SharePref}
-\alias{bws1count2P}
-\alias{bws1dataP}
 \alias{bws1Load}
-\alias{clogitP}
-\alias{resetbws1Dataset}
-\alias{resetbws1Fitmodel}
-\alias{resetbws1FitmodelSimple}
-\alias{resetbws1Items}
 
 
 \title{R Commander Plug-in for Case 1 Best--Worst Scaling}
@@ -37,83 +20,84 @@ analyzing the responses. For details on BWS1, refer to Louviere et al.
 }
 
 \details{
-This package is an R Commander Plug-in package for case 1 best--worst 
-scaling (BWS1). It depends on R packages \pkg{\link{crossdes}} (Sailer 2005),
- \pkg{\link{support.BWS}} (Aizaki 2021; Aizaki et al. 2014), 
+This package is an R Commander Plug-in package for BWS1.
+It depends on R packages \pkg{\link{crossdes}} (Sailer 2005),
+ \pkg{\link{support.BWS}} (Aizaki 2021; Aizaki and Fogarty 2023; Aizaki et al. 2014), 
 \pkg{\link{support.CEs}} (Aizaki 2012), and \pkg{survival} (Therneau 2021; 
 Therneau and Grambsch 2000) as well as the \pkg{\link{Rcmdr}} package 
 (Fox 2005, 2017ab; Fox and Bouchet-Valat 2021). Refer to 
-\pkg{\link{support.BWS}} and \dQuote{Non-Market Valuation with R} 
+Aizaki and Fogarty (2023) and \sQuote{Non-Market Valuation with R} 
 <\url{http://lab.agr.hokudai.ac.jp/nmvr/}> for a brief introduction to BWS1 
 in R.
 
-After successfully installing and loading the \pkg{RcmdrPlugin.BWS1}, 
-the R Commander window will appear, and then you will find \dQuote{BWS1} 
+After successfully installing and loading \pkg{RcmdrPlugin.BWS1}, 
+the R Commander window will appear, and then you will find \sQuote{\code{BWS1}} 
 added to the top-level menus in the R Commander window.
 
-Selecting \dQuote{BWS1} displays several menu items. When selecting a 
-menu item, the corresponding dialog box is open. The following dialog 
+Selecting \sQuote{\code{BWS1}} displays several menu items. When selecting a 
+menu item, the corresponding dialog box opens. The following dialog 
 boxes are provided by \pkg{RcmdrPlugin.BWS1}:
+
 \itemize{
-   \item The dialog box for \dQuote{Design choice sets...} designs choice sets 
+   \item The dialog box for \sQuote{\code{Design choice sets...}} designs choice sets 
 for BWS1 with an balanced incomplete block design (BIBD) using 
 functions \code{\link[crossdes]{find.BIB}} and \code{\link[crossdes]{isGYD}} 
 in the package \pkg{\link{crossdes}}.
 
-   \item The dialog box for \dQuote{Display questions...} displays a 
+   \item The dialog box for \sQuote{\code{Display questions...}} displays a 
 series of questions for BWS1 according to choice sets designed in 
 the previous dialog box using the function 
 \code{\link[support.BWS]{bws.questionnaire}} in the package \pkg{\link{support.BWS}}.
 
-   \item The dialog box for \dQuote{Create data set for analysis...} 
+   \item The dialog box for \sQuote{\code{Create data set for analysis...}} 
 creates a data set for analysis from the BIBD generated in the first 
 dialog box and a data set containing responses to BWS1 questions using 
 the function \code{\link[support.BWS]{bws.dataset}} 
 in \pkg{\link{support.BWS}}.
 
-   \item Selecting the menu item \dQuote{Measure preferences...} gives 
-options: \dQuote{Counting approach} and \dQuote{Modeling approach}. Each 
-has additional sub-items (see below).
+   \item Selecting the menu item \sQuote{\code{Measure preferences...}} gives 
+options: \sQuote{\code{Counting approach}} and \sQuote{\code{Modeling approach}}.
+Each has additional sub-items (see below).
 
-   \item The dialog box for \dQuote{Calculate scores...} calculates 
-various BW scores for each respondent from the data set for analysis 
+   \item The dialog box for \sQuote{\code{Calculate scores...}} calculates 
+various BW scores for each respondent from the data set for BWS1 analysis 
 created in the previous dialog box, and then stores them into a data 
 frame using the function \code{\link[support.BWS]{bws.count}} 
 in \pkg{\link{support.BWS}}.
 
-   \item Selecting \dQuote{Summarize scores} summarizes the BW scores 
+   \item Selecting \sQuote{\code{Summarize scores}} summarizes the BW scores 
 calculated in the previous dialog box and displays the results in the 
 Output pane of the R Commander window.
 
-   \item The dialog box for \dQuote{Draw distributions of scores...} 
+   \item The dialog box for \sQuote{\code{Draw distributions of scores...}} 
 draws distributions (bar plots) of the BW scores by item using an R 
-basic graphic function barplot (S3 method for class \sQuote{bws.count2}: 
+basic graphic function \code{barplot} (S3 method for class \sQuote{bws.count2}: 
 \code{\link[support.BWS]{bws.count}}).
 
-   \item The dialog box for \dQuote{Draw mean scores...} draws a bar 
-plot of means of the BW scores by item using the function barplot (S3 
+   \item The dialog box for \sQuote{\code{Draw mean scores...}} draws a bar 
+plot of means of the BW scores by item using the function \code{barplot} (S3 
 method for class \sQuote{bws.count2}: \code{\link[support.BWS]{bws.count}}).
 
-   \item The dialog box for \dQuote{Draw relationship between means and 
-sds of scores...} draws a plot of the relationship between means and 
+   \item The dialog box for \sQuote{\code{Draw relationship between means and 
+sds of scores...}} draws a plot of the relationship between means and 
 standard deviations of the BW scores by item using an R basic graphic 
-function plot (S3 method for class \sQuote{bws.count2}: 
+function \code{plot} (S3 method for class \sQuote{bws.count2}: 
 \code{\link[support.BWS]{bws.count}}).
 
-   \item The dialog box for \dQuote{Fit model...} implements a modeling 
-analysis using the data set for analysis generated in the previous 
+   \item The dialog box for \sQuote{\code{Fit model...}} implements a modeling 
+analysis using the data set for BWS1 analysis generated in the previous 
 dialog box using the functions \code{\link[survival]{clogit}} 
 in \pkg{survival} and \code{\link[support.CEs]{gofm}} 
 in \pkg{\link{support.CEs}}.
 
-   \item The dialog box for \dQuote{Calculate shares of preferences...} 
+   \item The dialog box for \sQuote{\code{Calculate shares of preferences...}} 
 calculates shares of preferences for items from the model fitted in the 
 previous dialog boxes using the function \code{\link[support.BWS]{bws.sp}} 
 in \pkg{\link{support.BWS}}.
 
-   \item The dialog box for \dQuote{Load saved objects...} loads 
-an R Data (rda) file saved in the dialog box for \dQuote{Design choice sets...} 
-or \dQuote{Create data set for analysis...} using the function 
+   \item The dialog box for \sQuote{\code{Load saved objects...}} loads 
+an R Data (rda) file saved in the dialog box for \sQuote{\code{Design choice sets...}} 
+or \sQuote{\code{Create data set for analysis...}} using the function 
 \code{\link[base]{load}} in \pkg{\link{base}}.
 }
 }

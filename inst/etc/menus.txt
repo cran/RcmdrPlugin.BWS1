@@ -16,7 +16,7 @@ item    bws1CA      command           "Draw relationship between means and sds o
 item    bws1Measure cascade           "Counting approach"                                     bws1CA              ""                 "packageAvailable('support.BWS')"
 menu    bws1MA      bws1Menu          ""                                                      ""                  ""                 ""
 item    bws1MA      command           "Fit model..."                                          bws1Model           "bws1DataP()"      "packageAvailable('survival')"
-item    bws1MA      command           "Calculate shares of preferences..."                    bws1SharePreference "clogitP()"        "packageAvailable('support.BWS')"
+item    bws1MA      command           "Calculate shares of preferences..."                    bws1SharePreference "bws1ClogitP()"    "packageAvailable('support.BWS')"
 item    bws1Measure cascade           "Modeling approach"                                     bws1MA              ""                 "packageAvailable('support.BWS')"
 menu    bws1SV      bws1Menu          ""                                                      ""                  ""                 ""
 item    bws1Menu    cascade           "Load saved objects"                                    bws1SV              ""                 ""

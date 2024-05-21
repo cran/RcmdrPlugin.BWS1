@@ -1,7 +1,7 @@
 \name{bws1Model}
 \alias{bws1Model}
 \alias{resetBws1Model}
-\alias{clogitP}
+\alias{bws1ClogitP}
 
 \title{Fit Model to BWS1 Data}
 

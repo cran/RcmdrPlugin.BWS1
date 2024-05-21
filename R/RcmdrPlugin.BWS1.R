@@ -440,6 +440,7 @@ bws1Dataset <- function() {
     saveVariable           = "0")
   dialog.values <- getDialog("bws1Dataset", defaults)
 
+  if(is.null(getDialog("bws1Dataset"))) putRcmdr("savedTableBws1Dataset", NULL)
 
   ###### Output frame
   outputFrame      <- tkframe(top)
@@ -592,7 +593,7 @@ bws1Dataset <- function() {
     tkgrid(get(".tableFrame", envir = env), sticky = "ew", padx = 6)
   }
 
-  ini.table <- getRcmdr("savedTable")
+  ini.table <- getRcmdr("savedTableBws1Dataset")
 
   # Slider
   if (is.null(ini.table)) {
@@ -754,7 +755,7 @@ bws1Dataset <- function() {
 }
 
 resetBws1Dataset <- function(){
-  putRcmdr("savedTable", NULL)
+  putRcmdr("savedTableBws1Dataset", NULL)
   putDialog("bws1Dataset", NULL)
   bws1Dataset()
 }
@@ -1124,9 +1125,10 @@ bws1Model <- function() {
   initializeDialog(title = 
     gettextRcmdr("Fit Model to BWS1 Data"))
   defaults <- list(
-    ini.responseVarName = "RES",
-    ini.strataVarName   = "STR",
-    ini.baseItem        = "1")
+    ini.responseVarName  = "RES",
+    ini.covariateVarName = NULL,
+    ini.strataVarName    = "STR",
+    ini.baseItem         = "1")
   dialog.values <- getDialog("bws1Model", defaults)
 
   .activeModel <- ActiveModel()
@@ -1202,16 +1204,21 @@ bws1Model <- function() {
   availableCovariates <- 
     sort(attributes(eval(parse(text = ActiveDataSet())))$respondent.characteristics)
   covariatesBox <- variableListBox(
-                     covariatesFrame, availableCovariates,
+                     covariatesFrame,
+                     availableCovariates,
                      title = gettextRcmdr("Covariates (pick zero or more)"),
-                     selectmode = "multiple", listHeight = 5)
+                     selectmode = "multiple",
+                     listHeight = 5,
+                     initialSelection = varPosn(dialog.values$ini.covariateVarName,
+                                                vars = availableCovariates))
 
 
   onOK <- function () {
     putDialog("bws1Model", list(
-      ini.responseVarName = tclvalue(responseVarName),
-      ini.strataVarName   = tclvalue(strataVarName),
-      ini.baseItem        = tclvalue(catalogVariable)))
+      ini.responseVarName  = tclvalue(responseVarName),
+      ini.strataVarName    = tclvalue(strataVarName),
+      ini.covariateVarName = getSelection(covariatesBox),
+      ini.baseItem         = tclvalue(catalogVariable)))
 
     modelValue  <- trim.blanks(tclvalue(modelName))
     responseVar <- trim.blanks(tclvalue(responseVarName))
@@ -1245,8 +1252,8 @@ bws1Model <- function() {
                  ")", sep = "")
 
     doItAndPrint(paste(modelValue, " <- ", cmd, sep = ""))
-    doItAndPrint(paste("attributes(", modelValue, ")$baseitem <- c('",
-                 rhsALL[k], "')", sep = ""))
+    justDoIt(paste("attributes(", modelValue, ")$baseitem <- c('",
+                   rhsALL[k], "')", sep = ""))
     doItAndPrint(paste0(modelValue))
     doItAndPrint(paste0("gofm(", modelValue,")"))
 
@@ -1425,8 +1432,10 @@ bws1Load <- function() {
   tkfocus(CommanderWindow())
 }
 ###############################################################################
-clogitP <- function() {
-  activeModelP() && class(get(ActiveModel()))[1] == "clogit"
+bws1ClogitP <- function() {
+  activeModelP() && 
+  class(get(ActiveModel()))[1] == "clogit" &&
+  class(get(ActiveDataSet()))[1] == "bwsdataset"
 }
 bws1DataP <- function() {
   activeDataSetP() && class(get(ActiveDataSet()))[1] == "bwsdataset"

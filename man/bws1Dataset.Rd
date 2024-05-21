@@ -83,5 +83,8 @@ Users must type appropriate names in each cell of the table.
 and worst-response variables stored in the active data set. These names
 must follow R's rules for naming variables.
 }
+
+Please click the \sQuote{\code{Cancel}} button and open this dialog box again
+if it does not work as expected.
 }
 

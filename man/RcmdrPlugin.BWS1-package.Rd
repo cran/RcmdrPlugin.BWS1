@@ -29,6 +29,7 @@ Therneau and Grambsch 2000) as well as the \pkg{\link{Rcmdr}} package
 Aizaki and Fogarty (2023) and \sQuote{Non-Market Valuation with R} 
 <\url{http://lab.agr.hokudai.ac.jp/nmvr/}> for a brief introduction to BWS1 
 in R.
+A manual for this package is available at <\url{https://sites.google.com/view/r4sp/rcmdrplugin}>.
 
 After successfully installing and loading \pkg{RcmdrPlugin.BWS1}, 
 the R Commander window will appear, and then you will find \sQuote{\code{BWS1}} 

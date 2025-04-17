@@ -4,14 +4,14 @@ bibentry(
   bibtype = "Manual",
   title   = "{RcmdrPlugin.BWS1: R Commander Plug-in for Case 1 Best-Worst Scaling}",
   author  = c(person("Hideo", "Aizaki")),
-  year    = 2023,
-  note    = "R package version 0.2-0",
+  year    = 2025,
+  note    = "R package version 0.2-3",
   url     = "https://CRAN.R-project.org/package=RcmdrPlugin.BWS1",
 
   textVersion = 
-  paste("Aizaki H (2023).",
+  paste("Aizaki H (2025).",
         "RcmdrPlugin.BWS1: R Commander Plug-in for Case 1 Best-Worst Scaling.",
-        "R package version 0.2-0.",
+        "R package version 0.2-3.",
         "URL https://CRAN.R-project.org/package=RcmdrPlugin.BWS2.")
 )
 

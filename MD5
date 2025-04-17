@@ -1,11 +1,11 @@
-1558f2c7ba1625121df2db8b77dbd321 *DESCRIPTION
+7a248740c1a6d656ef2bfd3058478b96 *DESCRIPTION
 d08294c32eec9245f055a16cf6dc2e14 *NAMESPACE
-8f97167232c2e87c64c6ea19b443f424 *NEWS
-a2b8bf12b2d65520bc3e42e3648a0712 *R/RcmdrPlugin.BWS1.R
+9571de38dfa11363e11ecc618e914dfa *NEWS
+3a0f0b073ac80e27da714a8d0d342d61 *R/RcmdrPlugin.BWS1.R
 6c274463e2d7ba67bc88b3c6e0dd0101 *R/globals.R
-0a6c810f5b812b82bc1ce639b5dd29a1 *inst/CITATION
-ca216030055744e5f5e12834368fed05 *inst/etc/menus.txt
-e0950b32805066ee17aed7632c2e6de2 *man/RcmdrPlugin.BWS1-package.Rd
+63caec4d9b1a20846b63fd81a534dcb5 *inst/CITATION
+bb7010a0d5cbc2d8d8cee7d2e3794285 *inst/etc/menus.txt
+a823ec7b8ec56c1aa7525abea1bcac70 *man/RcmdrPlugin.BWS1-package.Rd
 afcfa7a4f21cc254be8338f00f870fad *man/bws1Count.Rd
 110cf527beb33e9e5c3ff6fc9335266d *man/bws1CountBarplot1.Rd
 11c7d8911c61542d62af6be8376df742 *man/bws1CountBarplot2.Rd
@@ -14,4 +14,5 @@ afcfa7a4f21cc254be8338f00f870fad *man/bws1Count.Rd
 b3b2af9a43606a566668b296c1a4e711 *man/bws1Design.Rd
 8329f8172241c3de40009c5261c671f3 *man/bws1Model.Rd
 0819212f15093d9266ffc638f95d1005 *man/bws1Questions.Rd
+0bd731134611f0fdec45af6c847a0bf7 *man/bws1Response.Rd
 491a842bb5ae25040d3ac4276370000a *man/bws1SharePreference.Rd

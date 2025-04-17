@@ -21,13 +21,13 @@ analyzing the responses. For details on BWS1, refer to Louviere et al.
 
 \details{
 This package is an R Commander Plug-in package for BWS1.
-It depends on R packages \pkg{\link{crossdes}} (Sailer 2005),
- \pkg{\link{support.BWS}} (Aizaki 2021; Aizaki and Fogarty 2023; Aizaki et al. 2014), 
-\pkg{\link{support.CEs}} (Aizaki 2012), and \pkg{survival} (Therneau 2021; 
-Therneau and Grambsch 2000) as well as the \pkg{\link{Rcmdr}} package 
+It depends on R packages \pkg{crossdes} (Sailer 2005),
+ \pkg{support.BWS} (Aizaki 2021; Aizaki and Fogarty 2023; Aizaki et al. 2014), 
+\pkg{support.CEs} (Aizaki 2012), and \pkg{survival} (Therneau 2021; 
+Therneau and Grambsch 2000) as well as the \pkg{Rcmdr} package 
 (Fox 2005, 2017ab; Fox and Bouchet-Valat 2021). Refer to 
 Aizaki and Fogarty (2023) and \sQuote{Non-Market Valuation with R} 
-<\url{http://lab.agr.hokudai.ac.jp/nmvr/}> for a brief introduction to BWS1 
+<\url{https://nmvr.skr.jp/}> for a brief introduction to BWS1 
 in R.
 A manual for this package is available at <\url{https://sites.google.com/view/r4sp/rcmdrplugin}>.
 
@@ -43,18 +43,22 @@ boxes are provided by \pkg{RcmdrPlugin.BWS1}:
    \item The dialog box for \sQuote{\code{Design choice sets...}} designs choice sets 
 for BWS1 with an balanced incomplete block design (BIBD) using 
 functions \code{\link[crossdes]{find.BIB}} and \code{\link[crossdes]{isGYD}} 
-in the package \pkg{\link{crossdes}}.
+in the package \pkg{crossdes}.
 
    \item The dialog box for \sQuote{\code{Display questions...}} displays a 
 series of questions for BWS1 according to choice sets designed in 
 the previous dialog box using the function 
-\code{\link[support.BWS]{bws.questionnaire}} in the package \pkg{\link{support.BWS}}.
+\code{\link[support.BWS]{bws.questionnaire}} in the package \pkg{support.BWS}.
+
+   \item The dialog box for \sQuote{\code{Collect responses...}} displays three 
+types of dialog boxes to collect user's responses to BWS1 questions 
+according to choice sets designed in the previous dialog box.
 
    \item The dialog box for \sQuote{\code{Create data set for analysis...}} 
 creates a data set for analysis from the BIBD generated in the first 
 dialog box and a data set containing responses to BWS1 questions using 
 the function \code{\link[support.BWS]{bws.dataset}} 
-in \pkg{\link{support.BWS}}.
+in \pkg{support.BWS}.
 
    \item Selecting the menu item \sQuote{\code{Measure preferences...}} gives 
 options: \sQuote{\code{Counting approach}} and \sQuote{\code{Modeling approach}}.
@@ -64,7 +68,7 @@ Each has additional sub-items (see below).
 various BW scores for each respondent from the data set for BWS1 analysis 
 created in the previous dialog box, and then stores them into a data 
 frame using the function \code{\link[support.BWS]{bws.count}} 
-in \pkg{\link{support.BWS}}.
+in \pkg{support.BWS}.
 
    \item Selecting \sQuote{\code{Summarize scores}} summarizes the BW scores 
 calculated in the previous dialog box and displays the results in the 
@@ -89,17 +93,17 @@ function \code{plot} (S3 method for class \sQuote{bws.count2}:
 analysis using the data set for BWS1 analysis generated in the previous 
 dialog box using the functions \code{\link[survival]{clogit}} 
 in \pkg{survival} and \code{\link[support.CEs]{gofm}} 
-in \pkg{\link{support.CEs}}.
+in \pkg{support.CEs}.
 
    \item The dialog box for \sQuote{\code{Calculate shares of preferences...}} 
 calculates shares of preferences for items from the model fitted in the 
 previous dialog boxes using the function \code{\link[support.BWS]{bws.sp}} 
-in \pkg{\link{support.BWS}}.
+in \pkg{support.BWS}.
 
    \item The dialog box for \sQuote{\code{Load saved objects...}} loads 
 an R Data (rda) file saved in the dialog box for \sQuote{\code{Design choice sets...}} 
 or \sQuote{\code{Create data set for analysis...}} using the function 
-\code{\link[base]{load}} in \pkg{\link{base}}.
+\code{\link[base]{load}} in \pkg{base}.
 }
 }
 
@@ -134,10 +138,10 @@ Fox J (2017a) \emph{Using the R Commander: A Point-and-Click Interface
 for R}. Chapman and Hall/CRC. DOI: 10.1201/9781315380537
 
 Fox J (2017b) Writing R Commander Plug-in Packages. Version 3.4-0. 
-\url{https://socialsciences.mcmaster.ca/jfox/Books/RCommander/plug-ins.html}.
 
-Fox J, Bouchet-Valat M (2021) Rcmdr: R Commander. R package version 2.7-1.
- \url{https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/}.
+Fox J, Marquez MM, Bouchet-Valat M (2024) Rcmdr: R Commander. 
+R package version 2.9-5.
+\url{https://cran.r-project.org/package=Rcmdr}.
 
 Louviere JJ, Flynn TN, Marley AAJ (2015) \emph{Best-Worst Scaling: 
 Theory, Methods and Applications}. Cambridge University Press. 

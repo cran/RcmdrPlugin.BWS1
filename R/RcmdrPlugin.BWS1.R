@@ -1432,6 +1432,321 @@ bws1Load <- function() {
   tkfocus(CommanderWindow())
 }
 ###############################################################################
+
+bws1ResponseSet <- function(){
+  initializeDialog(title = gettextRcmdr("Set Options for Response Collection"))
+  defaults <- list(ini.designName  = "BWS1design",
+                   ini.itemName    = "BWS1items",
+                   ini.saveVariable    ="1")
+  dialog.values = getDialog("bws1ResponseSet", defaults)
+  
+  ##### Frame #####
+  inputsFrame <- tkframe(top)
+  diFrame     <- tkframe(inputsFrame)
+  saveFrame   <- tkframe(inputsFrame)
+  
+  # Design
+  designName <- tclVar(dialog.values$ini.designName)
+  design <- ttkentry(diFrame, width = "14", textvariable = designName)
+  
+  # Items
+  itemName <- tclVar(dialog.values$ini.itemName)
+  items <- ttkentry(diFrame, width = "14", textvariable = itemName)
+  
+  # Save
+  saveVariable <- tclVar(dialog.values$ini.saveVariable)
+  saveCheckBox <- ttkcheckbutton(saveFrame, variable = saveVariable)
+  
+  ##### OK button #####
+  onOK <- function() {
+    if (tclvalue(saveVariable) == 1) {
+      SAVE <- TRUE
+    } else {
+      SAVE <- FALSE
+    }
+    
+    closeDialog()
+    
+    putRcmdr("BWS1response.SAVE", SAVE)
+    
+    bws1Response()
+    
+    tkfocus(CommanderWindow())
+  }
+  
+  OKCancelHelp(helpSubject = "bws1Response")
+  
+  # Design
+  tkgrid(
+    labelRcmdr(
+      diFrame,
+      text = gettextRcmdr("Design ")),
+    design,
+    sticky = "w")
+  
+  # Items
+  tkgrid(
+    labelRcmdr(
+      diFrame,
+      text = gettextRcmdr("Items ")),
+    items,
+    sticky = "w")
+  
+  # Save
+  tkgrid(
+    saveCheckBox,
+    labelRcmdr(
+      saveFrame,
+      text = gettextRcmdr("Save to file")),
+    sticky = "w")
+  
+  tkgrid(diFrame, sticky = "nw")
+
+  tkgrid(saveFrame, sticky = "nw")
+  
+  tkgrid(inputsFrame, sticky = "nw")
+  
+  tkgrid(buttonsFrame, columnspan = 2, sticky = "w")
+  
+  dialogSuffix()
+}
+
+###############################################################################
+
+bws1Response <- function() {
+  initializeDialog(title = gettextRcmdr("Collect Responses"))
+  defaults <- list(
+    ini.Q = 1,
+    ini.bestName   = "<no item selected>",
+    ini.worstName  = "<no item selected>",
+    ini.designName = "BWS1design",
+    ini.itemName   = "BWS1items")
+  dialog.values <- getDialog("bws1Response", defaults)
+  
+  save <- getRcmdr("BWS1response.SAVE")
+  
+  ##### Frame
+  inputsFrame   <- tkframe(top)
+  bwFrame       <- tkframe(inputsFrame)
+  okcancelFrame <- tkframe(top)
+  okFrame       <- tkframe(okcancelFrame)
+  cancelFrame   <- tkframe(okcancelFrame)
+  
+  # Design
+  designName  <- tclVar(dialog.values$ini.designName)
+  designValue <- tclvalue(designName)
+  
+  # Items
+  itemName <- tclVar(dialog.values$ini.itemName)
+  itemVars <- tclvalue(itemName)
+  
+  # DESIGN, allItems, availableItems
+  DESIGN         <- eval(parse(text = designValue))
+  allItems       <- eval(parse(text = itemVars))
+  availableItems <- allItems[DESIGN[dialog.values$ini.Q, ]]
+  nQues          <- nrow(DESIGN)
+  
+  # Best
+  bestitem <- variableComboBox(
+    bwFrame,
+    variableList = availableItems,
+    nullSelection = "<no item selected>",
+    adjustWidth = TRUE)
+  
+  # Worst
+  worstitem <- variableComboBox(
+    bwFrame,
+    variableList = availableItems,
+    nullSelection = "<no item selected>",
+    adjustWidth = TRUE)
+  
+  ##### OK button #####
+  onOK <- function() {
+    bestName  <- getSelection(bestitem)
+    worstName <- getSelection(worstitem)
+    
+    if(bestName == "<no item selected>") {
+      Message(gettextRcmdr("Please select your best item"), type = "warning")
+      closeDialog()
+      bws1Response()
+      return()
+    }
+    
+    if(worstName == "<no item selected>") {
+      Message(gettextRcmdr("Please select your worst item"), type = "warning")
+      closeDialog()
+      bws1Response()
+      return()
+    }
+
+    if(bestName == worstName) {
+      Message(gettextRcmdr("Your best item must differ from your worst item"),
+              type = "warning")
+      closeDialog()
+      bws1Response()
+      return()
+    }
+    
+    putDialog("bws1Response", list(
+      ini.Q          = dialog.values$ini.Q + 1,
+      ini.bestName   = "<no item selected>",
+      ini.worstName  = "<no item selected>",
+      ini.designName = designValue,
+      ini.itemName   = itemVars))
+    
+    if(dialog.values$ini.Q == 1) {
+      set.seed(seed = NULL)
+      justDoIt(paste0("MyBWS1responses <- c(", sample.int(1e10, 1), ")"))
+    }
+    
+    rowNumberBest  <- which(bestName  == availableItems)
+    rowNumberWorst <- which(worstName == availableItems)
+    
+    justDoIt(paste0("MyBWS1responses <- c(MyBWS1responses, c(",
+                    rowNumberBest, ", ", rowNumberWorst, "))"))
+    
+    closeDialog()
+    
+    if(dialog.values$ini.Q < nQues) {
+      bws1Response()
+    } else {
+      putDialog("bws1Response", list(
+        ini.Q          = 1,
+        ini.bestName   = "<no item selected>",
+        ini.worstName  = "<no item selected>",
+        ini.designName = designValue,
+        ini.itemName   = itemVars))
+      
+      varNAMES <- paste0("'",
+                         paste0(rep(c("B", "W"), time = nQues),
+                                rep(1:nQues, each = 2), collapse = "', '"),
+                         "'")
+      cmd <- paste0("names(MyBWS1responses) <- c('id', ", c(varNAMES), ")")
+      justDoIt(cmd)
+      doItAndPrint(paste0("MyBWS1responses"))
+      
+      # Save
+      if(isTRUE(save)) {
+        saveFile <- tclvalue(tkgetSaveFile(
+          filetypes = gettextRcmdr(
+            '{"CSV Files" {".csv" ".CSV"}}'),
+          defaultextension = ".csv",
+          initialfile = "MyBWS1responses.csv",
+          parent = CommanderWindow()))
+        if(saveFile == "") {
+          tkfocus(CommanderWindow())
+          return()
+        }
+        cmd <- paste0('write.csv(t(MyBWS1responses), file = "', saveFile,
+                      '", row.names = FALSE)')
+        justDoIt(cmd)
+        logger(cmd)
+        Message(
+          paste0(
+            gettextRcmdr("Your responses to BWS1 questions were exported to file: "),
+            saveFile),
+          type = "note")
+      }
+    }
+    tkfocus(CommanderWindow())
+  }
+  
+  onCancel <- function() {
+    closeDialog()
+    
+    putDialog("bws1Response", list(
+      ini.Q          = 1,
+      ini.bestName   = "<no item selected>",
+      ini.worstName  = "<no item selected>",
+      ini.designName = designValue,
+      ini.itemName   = itemVars))
+    
+    tkfocus(CommanderWindow())
+  }
+  
+  tkgrid(
+    labelRcmdr(
+      inputsFrame,
+      text = gettextRcmdr(paste0("Question ", dialog.values$ini.Q))),
+    sticky = "w")
+  
+  tkgrid(
+    labelRcmdr(
+      inputsFrame,
+      text = gettextRcmdr(
+        "Please select your best and worst items from the following:")),
+    sticky = "w")
+  
+  for(i in 1:ncol(DESIGN)) {
+    tkgrid(
+      labelRcmdr(
+        inputsFrame,
+        text = paste0("  ", allItems[DESIGN[dialog.values$ini.Q, i]]),
+        foreground = "blue"),
+      sticky = "w")
+  }
+
+  tkgrid(
+    labelRcmdr(
+      inputsFrame, 
+      text =""),
+    sticky = "w")
+
+  tkgrid(labelRcmdr(bwFrame, text = "My best: "),
+         getFrame(bestitem),
+         sticky = "w")
+  
+  tkgrid(labelRcmdr(bwFrame, text = "My worst: "),
+         getFrame(worstitem),
+         sticky = "w")
+
+  tkgrid(bwFrame, sticky = "w")
+  
+  ##### OK button #####
+  okButton <- buttonRcmdr(
+    okFrame,
+    text = gettextRcmdr("OK"),
+    foreground = "darkgreen",
+    width = "10",
+    command = onOK,
+    default = "active",
+    borderwidth = 3,
+    image = "::image::okIcon",
+    compound = "left")
+
+  cancelButton <- buttonRcmdr(
+    cancelFrame,
+    text = gettextRcmdr("Cancel"),
+    foreground = "darkgreen",
+    width = "10",
+    command = onCancel,
+    default = "active",
+    borderwidth = 3,
+    image = "::image::cancelIcon",
+    compound = "left")
+  
+  tkgrid(okButton, sticky = "w")
+  tkconfigure(okButton, takefocus = 0)
+  
+  tkgrid(cancelButton, sticky = "w")
+  tkconfigure(cancelButton, takefocus = 0)
+  
+  tkgrid(
+    labelRcmdr(
+      inputsFrame,
+      text = ""),
+    sticky = "w")
+  
+  tkgrid(inputsFrame, sticky = "nw")
+
+  tkgrid(okFrame, cancelFrame, sticky = "nw")
+  
+  tkgrid(okcancelFrame, sticky = "w")
+  
+  dialogSuffix()
+}
+
+###############################################################################
 bws1ClogitP <- function() {
   activeModelP() && 
   class(get(ActiveModel()))[1] == "clogit" &&

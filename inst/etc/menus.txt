@@ -3,6 +3,7 @@
 menu    bws1Menu    topMenu           ""                                                      ""                  ""                 ""
 item    bws1Menu    command           "Create choice sets..."                                 bws1Design          ""                 "packageAvailable('crossdes')"
 item    bws1Menu    command           "Display questions..."                                  bws1Questions       ""                 "packageAvailable('support.BWS')"
+item    bws1Menu    command           "Collect responses..."                                  bws1ResponseSet     ""                 "packageAvailable('support.BWS')"
 item    bws1Menu    command           "Create data set for analysis..."                       bws1Dataset         "activeDataSetP()" "packageAvailable('support.BWS')"
 item    topMenu     cascade           "BWS1"                                                  bws1Menu            ""                 "packageAvailable('crossdes')"
 menu    bws1Measure bws1Menu          ""                                                      ""                  ""                 ""

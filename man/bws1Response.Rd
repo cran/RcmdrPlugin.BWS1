@@ -36,9 +36,9 @@ to an external file in CSV format (\code{.csv}), check this box.
 After confirming all the settings on the first dialog box, press
 the \sQuote{\code{OK}} button to continue.
 
-A series of dialog boxes (\sQuote{\code{Collect Responses}}) sequentially
-opens to collect the user's responses to BWS1 questions. In each dialog box,
-items designed in the \sQuote{\code{Design Choice Sets for BWS1}}
+A series of dialog boxes (\sQuote{\code{Collect Responses to BWS1 Questions}})
+sequentially opens to collect the user's responses to BWS1 questions.
+In each dialog box, items designed in the \sQuote{\code{Design Choice Sets for BWS1}}
 dialog box are presented. The user is asked to select their best and worst
 items from the drop-down list boxes. After making the selection,
 the user clicks the \sQuote{\code{OK}} button to open a new dialog box

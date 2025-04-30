@@ -1,9 +1,15 @@
 Changes to package RcmdrPlugin.BWS1
 
+2025-04-30, version 0.3-0
+- Modified functions.
+- Modified a help file.
+- Modified DESCRIPTION.
+- Modified CITATION.
+
 2025-04-17, version 0.2-3
 - Added a dialog box for collecting responses to questions.
-- Added help file.
-- Modified help file.
+- Added a help file.
+- Modified a help file.
 - Modified DESCRIPTION.
 
 2024-05-21, version 0.2-2

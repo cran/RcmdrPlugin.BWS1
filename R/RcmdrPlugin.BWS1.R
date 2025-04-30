@@ -1225,7 +1225,6 @@ bws1Model <- function() {
     strataVar   <- trim.blanks(tclvalue(strataVarName))
     k           <- as.numeric(tclvalue(catalogVariable))
     rhsVars     <- rhsALL[-k]
-    rhsVars     <- paste(rhsVars, collapse = " + ")
     covariates  <- getSelection(covariatesBox)
     closeDialog()
    
@@ -1239,13 +1238,17 @@ bws1Model <- function() {
     }
 
     if (length(covariates) == 0) {
-      formula <- paste(responseVar, " ~ ", rhsVars, 
-                       " + strata(", strataVar ,")", sep = "")
+      formula <- paste0(responseVar, " ~ ", paste(rhsVars, collapse = " + "), 
+                       " + strata(", strataVar ,")")
     } else {
-      covariates <- paste(covariates, collapse = "+")
-      formula <- paste(responseVar, " ~ (", rhsVars, ") * (", covariates, 
-                       ") - (", covariates, ") + strata(", strataVar ,")", 
-                       sep = "")
+      covariatesMF <- paste0(rep(rhsVars, each = length(covariates)),
+                             ":",
+                             rep(covariates, time = length(rhsVars)),
+                             collapse = " + ")
+      formula <- paste0(responseVar, " ~ ", 
+                        paste(rhsVars, collapse = " + "),
+                        " + ", covariatesMF,
+                        " + strata(", strataVar ,")")
     }
 
     cmd <- paste("clogit(", formula, ", data = ", ActiveDataSet(), subset, 
@@ -1414,7 +1417,7 @@ bws1SharePreference <- function() {
 }
 ###############################################################################
 bws1Load <- function() {
-  file <- tclvalue(tkgetOpenFile(filetype = gettextRcmdr(
+  file <- tclvalue(tkgetOpenFile(filetypes = gettextRcmdr(
             '{"R Data Files" {".rda" ".RDA" ".rdata" ".RData"}}')))
   if (file == "") {
     return()
@@ -1514,7 +1517,7 @@ bws1ResponseSet <- function(){
 ###############################################################################
 
 bws1Response <- function() {
-  initializeDialog(title = gettextRcmdr("Collect Responses"))
+  initializeDialog(title = gettextRcmdr("Collect Responses to BWS1 Questions"))
   defaults <- list(
     ini.Q = 1,
     ini.bestName   = "<no item selected>",
